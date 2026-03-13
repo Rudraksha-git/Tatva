@@ -25,11 +25,6 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: AppColors.white, // Text color on AppBar
-        elevation: 0,
-      ),
     );
   }
 
