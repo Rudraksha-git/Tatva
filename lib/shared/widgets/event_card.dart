@@ -13,6 +13,8 @@ class EventCard extends StatelessWidget {
   final VoidCallback? onRegister;
   final bool? isSports;
   final String? limit;
+  final bool isAdmin;
+  final VoidCallback? onViewStats;
 
   const EventCard({
     super.key,
@@ -26,6 +28,8 @@ class EventCard extends StatelessWidget {
     this.onRegister,
     this.isSports,
     this.limit,
+    this.isAdmin = false,
+    this.onViewStats,
   });
 
   @override
@@ -219,12 +223,13 @@ class EventCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: onRegister,
+                    onPressed: isAdmin ? onViewStats : onRegister,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isSports != null && isSports == true
+                      backgroundColor: isAdmin
+                          ? (isDark ? AppColors.slate600 : AppColors.slate200)
+                          : (isSports != null && isSports == true
                               ? AppColors.orangeRed
-                              : AppColors.amber300,
+                              : AppColors.amber300),
                       foregroundColor: AppColors.darkGrey,
                       padding: const EdgeInsets.symmetric(
                         vertical: AppSizes.x12,
@@ -235,15 +240,16 @@ class EventCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Register Now',
+                      isAdmin ? 'View Stats' : 'Register Now',
                       style: TextStyle(
                         fontSize: AppSizes.x16,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.5,
-                        color:
-                            isSports != null && isSports == true
+                        color: isAdmin
+                            ? (isDark ? AppColors.white : AppColors.darkGrey)
+                            : (isSports != null && isSports == true
                                 ? AppColors.white
-                                : AppColors.darkGrey,
+                                : AppColors.darkGrey),
                       ),
                     ),
                   ),
