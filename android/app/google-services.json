@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "880825229325",
+    "project_id": "tatva-757e5",
+    "storage_bucket": "tatva-757e5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880825229325:android:0f1b2add700207a863f544",
+        "android_client_info": {
+          "package_name": "com.example.fest_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880825229325-knjl3njqooba41df1iuf0u2p93kbkm00.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fest_app",
+            "certificate_hash": "0c74a322d733b41153375886e2024d884cf12f0e"
+          }
+        },
+        {
+          "client_id": "880825229325-2l8qrc3pkto77r8q7mehn63aeuaf14jc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCk37RaX3uFoCAqEjoNFCCGBIvLMw-ADg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880825229325-2l8qrc3pkto77r8q7mehn63aeuaf14jc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "880825229325-m7a3du6j31lpigqfp69oc0fnkp9a8k5t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.festApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

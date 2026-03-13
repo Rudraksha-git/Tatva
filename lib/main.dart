@@ -1,6 +1,8 @@
+import 'package:fest_app/config/app_theme.dart';
+import 'package:fest_app/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'services/notification_services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,6 +12,10 @@ void main() async {
   await _requestNotificationPermission();
 
   await Get.putAsync(() => NotificationService().init());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
@@ -28,10 +34,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Tatva',
       debugShowCheckedModeBanner: false,
-      
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: HomePage(),
     );
   }
