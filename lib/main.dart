@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'services/notification_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
 
+  await _requestNotificationPermission();
+
   await Get.putAsync(() => NotificationService().init());
   runApp(const MyApp());
+}
+
+Future<void> _requestNotificationPermission() async {
+  final status = await Permission.notification.status;
+  if (!status.isGranted) {
+    await Permission.notification.request();
+  }
 }
 
 class MyApp extends StatelessWidget {
