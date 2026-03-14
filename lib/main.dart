@@ -1,5 +1,6 @@
 import 'package:fest_app/config/app_theme.dart';
 import 'package:fest_app/firebase_options.dart';
+import 'package:fest_app/shared/views/bottom_nav_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,9 +36,9 @@ class MyApp extends StatelessWidget {
       title: 'Tatva',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      darkTheme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
-      home: HomePage(),
+      home: BottomNavView(),
     );
   }
 }

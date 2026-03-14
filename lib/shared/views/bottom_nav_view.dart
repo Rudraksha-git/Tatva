@@ -1,5 +1,4 @@
-import 'package:fest_app/admin/views/admin_cultural_event_view.dart';
-import 'package:fest_app/admin/views/admin_sports_event_view.dart';
+import 'package:fest_app/shared/views/event_view.dart';
 import 'package:fest_app/shared/views/sports_event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,7 @@ import '../../config/app_sizes.dart';
 import '../../config/app_colors.dart';
 import '../controllers/bottom_nav_controller.dart';
 import '../../student/views/profile_view.dart';
-import '../../shared/views/cultural_event_view.dart';
+import 'home_view.dart';
 
 class BottomNavView extends StatelessWidget {
   final BottomNavController controller = Get.put(BottomNavController());
@@ -18,9 +17,9 @@ class BottomNavView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Basic screens to verify routing - these should be replaced with actual view widgets
     final List<Widget> screens = [
-      const Center(child: Text('Home View Skeleton')), // Replace with HomeView
-      const AdminCulturalEventView(), // Cultural Events
-      const AdminSportsEventView(), // Sports Events (You can pass a parameter to filter if your EventView supports it)
+     HomeView(),// Replace with HomeView
+      const CulturalEventView(), // Cultural Events
+       SportsEventView(), // Sports Events (You can pass a parameter to filter if your EventView supports it)
       const ProfileView(),
     ];
 

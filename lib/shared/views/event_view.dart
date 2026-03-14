@@ -3,28 +3,25 @@ import 'package:get/get.dart';
 import 'package:fest_app/config/app_colors.dart';
 
 import '../../config/app_sizes.dart';
+import '../controllers/event_controller.dart';
+import '../widgets/eventCard.dart';
+import 'event_detail_view.dart';
 
-import '../controllers/sports_event_controller.dart';
-import '../widgets/sports_event_card.dart';
-import 'sports_event_detail_view.dart';
 
-class SportsEventView extends StatelessWidget {
-  const SportsEventView({super.key});
+
+
+class CulturalEventView extends StatelessWidget {
+  const CulturalEventView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SportsEventController controller = Get.put(SportsEventController());
-
-    // Sports-specific tabs
-    final List<String> sportsTabs = [
-      'All Sports', 'Cricket', 'Football', 'Basketball', 'Volleyball',
-      'Badminton', 'Chess', 'Tug of War', 'Esports', 'Powersports'
-    ];
+    final EventController controller = Get.put(EventController());
+    final List<String> categories = ['All Events', 'Music', 'Dance', 'Drama', 'Fashion', 'Art', 'Photography'];
 
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: const CustomAppBar(
-        title: 'Sports Events',
+        title: 'Cultural Events',
         showBackButton: false,
         notificationCount: 3,
     ),
@@ -46,9 +43,9 @@ class SportsEventView extends StatelessWidget {
     onTap: () => controller.setLocation(loc),
     child: Container(
     decoration: BoxDecoration(
-    color: isSelected ? Colors.green[600] : Colors.transparent, // Green tint for sports
+    color: isSelected ? Colors.blue[600] : Colors.transparent,
     borderRadius: BorderRadius.circular(22),
-    boxShadow: isSelected ? [BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))] : [],
+    boxShadow: isSelected ? [BoxShadow(color: Colors.blue.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))] : [],
     ),
     alignment: Alignment.center,
     child: Text(
@@ -64,27 +61,27 @@ class SportsEventView extends StatelessWidget {
   ),
   ),
 
-  // 2. Sport Category Tab Bar
+  // 2. Category Tab Bar
   Container(
   height: 45,
   decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[200]!))),
   child: Obx(() {
-  String currentSport = controller.selectedSport.value;
+  String currentCategory = controller.selectedCategory.value;
   return ListView.builder(
   scrollDirection: Axis.horizontal,
   padding: const EdgeInsets.symmetric(horizontal: 10),
-  itemCount: sportsTabs.length,
+  itemCount: categories.length,
   itemBuilder: (context, index) {
-  String tab = sportsTabs[index];
-  bool isSelected = currentSport == tab;
+  String cat = categories[index];
+  bool isSelected = currentCategory == cat;
   return GestureDetector(
-  onTap: () => controller.setSport(tab),
+  onTap: () => controller.setCategory(cat),
   child: Container(
   padding: const EdgeInsets.symmetric(horizontal: 16),
   margin: const EdgeInsets.symmetric(horizontal: 4),
   decoration: BoxDecoration(border: Border(bottom: BorderSide(color: isSelected ? Colors.deepOrange : Colors.transparent, width: 3))),
   alignment: Alignment.center,
-  child: Text(tab, style: TextStyle(color: isSelected ? Colors.deepOrange : Colors.grey[500], fontWeight: isSelected ? FontWeight.bold : FontWeight.w600, fontSize: 14)),
+  child: Text(cat, style: TextStyle(color: isSelected ? Colors.deepOrange : Colors.grey[500], fontWeight: isSelected ? FontWeight.bold : FontWeight.w600, fontSize: 14)),
   ),
   );
   },
@@ -96,7 +93,7 @@ class SportsEventView extends StatelessWidget {
   Expanded(
   child: Obx(() {
   if (controller.isLoading.value) return const Center(child: CircularProgressIndicator());
-  if (controller.filteredEvents.isEmpty) return Center(child: Text("No sports match your filters.", style: TextStyle(color: Colors.grey[500], fontSize: 16)));
+  if (controller.filteredEvents.isEmpty) return Center(child: Text("No events match your filters.", style: TextStyle(color: Colors.grey[500], fontSize: 16)));
 
   return ListView.separated(
   padding: const EdgeInsets.all(20),
@@ -104,32 +101,26 @@ class SportsEventView extends StatelessWidget {
   separatorBuilder: (_, __) => const SizedBox(height: 24),
   itemBuilder: (context, index) {
   var event = controller.filteredEvents[index];
+  String displayDate = event.startDate != null ? _formatDate(event.startDate!) : 'TBA';
+  String displayTime = event.schedule?.time ?? event.schedule?.prelims ?? 'TBA';
+  String imgUrl = _getPlaceholderImage(event.category);
 
-  // Construct date string (e.g., "Mar 18 - Apr 03")
-  String dateString = 'TBA';
-  if (event.startDate != null && event.endDate != null) {
-  dateString = "${_formatDate(event.startDate!)} - ${_formatDate(event.endDate!)}";
-  } else if (event.startDate != null) {
-  dateString = _formatDate(event.startDate!);
-  }
-
-  String imgUrl = _getSportPlaceholder(event.sport);
-
-  return SportsEventCard(
-  sportName: event.sport ?? 'Unknown Sport',
-  date: dateString,
+  return EventCard(
+  eventName: event.event ?? 'Unknown Event',
+  category: event.category ?? 'Uncategorized',
+  date: displayDate,
+  time: displayTime,
   location: event.venue ?? 'TBA',
   description: event.description ?? '',
   imageUrl: imgUrl,
   isRegistrationOpen: event.registrationOpen ?? false,
-  onRegister: () {
-  Get.snackbar('Registration Started', 'You are registering for ${event.sport}', snackPosition: SnackPosition.BOTTOM, backgroundColor: AppColors.primaryBlue ?? Colors.blue, colorText: Colors.white, margin: const EdgeInsets.all(16));
-  },
+  onRegister: () => _handleRegistration(event.event),
   onCardTap: () {
-  Get.to(() => SportsEventDetailView(
+  Get.to(() => CulturalEventDetailView(
   event: event,
   imageUrl: imgUrl,
-  displayDate: dateString,
+  displayDate: displayDate,
+  displayTime: displayTime,
   ));
   },
   );
@@ -142,6 +133,10 @@ class SportsEventView extends StatelessWidget {
   );
 }
 
+void _handleRegistration(String? eventName) {
+  Get.snackbar('Registration Started', 'You are registering for $eventName', snackPosition: SnackPosition.BOTTOM, backgroundColor: AppColors.primaryBlue ?? Colors.blue, colorText: Colors.white, margin: const EdgeInsets.all(16));
+}
+
 String _formatDate(String rawDate) {
   try {
     DateTime dt = DateTime.parse(rawDate);
@@ -152,23 +147,16 @@ String _formatDate(String rawDate) {
   }
 }
 
-String _getSportPlaceholder(String? sport) {
-  if (sport == null) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
-  String s = sport.toLowerCase();
-
-  if (s.contains('volleyball')) return 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1';
-  if (s.contains('basketball')) return 'https://images.unsplash.com/photo-1546519638-68e109498ffc';
-  if (s.contains('cricket')) return 'https://images.unsplash.com/photo-1531415074968-036ba1b575da';
-  if (s.contains('football')) return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55';
-  if (s.contains('chess')) return 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b';
-  if (s.contains('badminton')) return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea';
-  if (s.contains('esport') || s.contains('gaming')) return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
-  if (s.contains('power') || s.contains('weight')) return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
-
-  return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211'; // General sports
+String _getPlaceholderImage(String? category) {
+  if (category == null) return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
+  String cat = category.toLowerCase();
+  if (cat.contains('dance')) return 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad';
+  if (cat.contains('music') || cat.contains('singing')) return 'https://images.unsplash.com/photo-1516280440502-6c39f0ed26f7';
+  if (cat.contains('drama') || cat.contains('theatre')) return 'https://images.unsplash.com/photo-1507676184212-d0330a15183e';
+  if (cat.contains('art') || cat.contains('design') || cat.contains('photo')) return 'https://images.unsplash.com/photo-1513364776144-60967b0f800f';
+  return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
 }
 }
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
