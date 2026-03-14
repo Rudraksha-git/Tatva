@@ -1,6 +1,8 @@
+import 'package:fest_app/shared/views/all_anouncement._view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fest_app/config/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/app_sizes.dart';
 
@@ -17,156 +19,269 @@ class SportsEventView extends StatelessWidget {
 
     // Sports-specific tabs
     final List<String> sportsTabs = [
-      'All Sports', 'Cricket', 'Football', 'Basketball', 'Volleyball',
-      'Badminton', 'Chess', 'Tug of War', 'Esports', 'Powersports'
+      'All Sports',
+      'Cricket',
+      'Football',
+      'Basketball',
+      'Volleyball',
+      'Badminton',
+      'Chess',
+      'Tug of War',
+      'Esports',
+      'Powersports',
     ];
 
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: const CustomAppBar(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(
         title: 'Sports Events',
         showBackButton: false,
+        onNotificationTap: () {
+          Get.to(() => AllAnnouncementsView());
+        },
         notificationCount: 3,
-    ),
-    body: Column(
-    children: [
-    // 1. Location Toggle Switch
-    Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    child: Container(
-    height: 44,
-    decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(22)),
-    child: Obx(() {
-    String currentLocation = controller.selectedLocation.value;
-    return Row(
-    children: ['All', 'Bihta', 'Patna'].map((loc) {
-    bool isSelected = currentLocation == loc;
-    return Expanded(
-    child: GestureDetector(
-    onTap: () => controller.setLocation(loc),
-    child: Container(
-    decoration: BoxDecoration(
-    color: isSelected ? Colors.green[600] : Colors.transparent, // Green tint for sports
-    borderRadius: BorderRadius.circular(22),
-    boxShadow: isSelected ? [BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))] : [],
-    ),
-    alignment: Alignment.center,
-    child: Text(
-    loc,
-    style: TextStyle(color: isSelected ? Colors.white : Colors.grey[600], fontWeight: isSelected ? FontWeight.bold : FontWeight.w600, fontSize: 14),
-    ),
-    ),
-    ),
+      ),
+      body: Column(
+        children: [
+          // 1. Location Toggle Switch
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            child: Container(
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Obx(() {
+                String currentLocation = controller.selectedLocation.value;
+                return Row(
+                  children:
+                      ['All', 'Bihta', 'Patna'].map((loc) {
+                        bool isSelected = currentLocation == loc;
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () => controller.setLocation(loc),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    isSelected
+                                        ? Colors.green[600]
+                                        : Colors
+                                            .transparent, // Green tint for sports
+                                borderRadius: BorderRadius.circular(22),
+                                boxShadow:
+                                    isSelected
+                                        ? [
+                                          BoxShadow(
+                                            color: Colors.green.withOpacity(
+                                              0.3,
+                                            ),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                        : [],
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                loc,
+                                style: TextStyle(
+                                  color:
+                                      isSelected
+                                          ? Colors.white
+                                          : Colors.grey[600],
+                                  fontWeight:
+                                      isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                );
+              }),
+            ),
+          ),
+
+          // 2. Sport Category Tab Bar
+          Container(
+            height: 45,
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+            ),
+            child: Obx(() {
+              String currentSport = controller.selectedSport.value;
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                itemCount: sportsTabs.length,
+                itemBuilder: (context, index) {
+                  String tab = sportsTabs[index];
+                  bool isSelected = currentSport == tab;
+                  return GestureDetector(
+                    onTap: () => controller.setSport(tab),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color:
+                                isSelected
+                                    ? Colors.deepOrange
+                                    : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        tab,
+                        style: TextStyle(
+                          color:
+                              isSelected ? Colors.deepOrange : Colors.grey[500],
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
+
+          // 3. Filtered Events List
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (controller.filteredEvents.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No sports match your filters.",
+                    style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: const EdgeInsets.all(20),
+                itemCount: controller.filteredEvents.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 24),
+                itemBuilder: (context, index) {
+                  var event = controller.filteredEvents[index];
+
+                  // Construct date string (e.g., "Mar 18 - Apr 03")
+                  String dateString = 'TBA';
+                  if (event.startDate != null && event.endDate != null) {
+                    dateString =
+                        "${_formatDate(event.startDate!)} - ${_formatDate(event.endDate!)}";
+                  } else if (event.startDate != null) {
+                    dateString = _formatDate(event.startDate!);
+                  }
+
+                  String imgUrl = _getSportPlaceholder(event.sport);
+
+                  return SportsEventCard(
+                    sportName: event.sport ?? 'Unknown Sport',
+                    date: dateString,
+                    location: event.venue ?? 'TBA',
+                    description: event.description ?? '',
+                    registrationUrl: event.registrationUrl,
+                    imageUrl: event.posterUrl.toString(),
+                    onRegister: () {
+                      if(event.registrationUrl == null) {
+                        Get.snackbar(
+                          "Registration URL Missing",
+                          "Sorry, the registration link for this event is currently unavailable.",
+                          backgroundColor: Colors.red[50],
+                          colorText: Colors.red[700],
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        return;
+                      }
+                      launchUrl(Uri.parse(event.registrationUrl!));
+                    },
+                    onCardTap: () {
+                      Get.to(
+                        () => SportsEventDetailView(
+                          event: event,
+                          imageUrl: event.posterUrl ?? imgUrl,
+                          displayDate: dateString,
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
     );
-    }).toList()
-    );
-  }),
-  ),
-  ),
 
-  // 2. Sport Category Tab Bar
-  Container(
-  height: 45,
-  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[200]!))),
-  child: Obx(() {
-  String currentSport = controller.selectedSport.value;
-  return ListView.builder(
-  scrollDirection: Axis.horizontal,
-  padding: const EdgeInsets.symmetric(horizontal: 10),
-  itemCount: sportsTabs.length,
-  itemBuilder: (context, index) {
-  String tab = sportsTabs[index];
-  bool isSelected = currentSport == tab;
-  return GestureDetector(
-  onTap: () => controller.setSport(tab),
-  child: Container(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  margin: const EdgeInsets.symmetric(horizontal: 4),
-  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: isSelected ? Colors.deepOrange : Colors.transparent, width: 3))),
-  alignment: Alignment.center,
-  child: Text(tab, style: TextStyle(color: isSelected ? Colors.deepOrange : Colors.grey[500], fontWeight: isSelected ? FontWeight.bold : FontWeight.w600, fontSize: 14)),
-  ),
-  );
-  },
-  );
-  }),
-  ),
-
-  // 3. Filtered Events List
-  Expanded(
-  child: Obx(() {
-  if (controller.isLoading.value) return const Center(child: CircularProgressIndicator());
-  if (controller.filteredEvents.isEmpty) return Center(child: Text("No sports match your filters.", style: TextStyle(color: Colors.grey[500], fontSize: 16)));
-
-  return ListView.separated(
-  padding: const EdgeInsets.all(20),
-  itemCount: controller.filteredEvents.length,
-  separatorBuilder: (_, __) => const SizedBox(height: 24),
-  itemBuilder: (context, index) {
-  var event = controller.filteredEvents[index];
-
-  // Construct date string (e.g., "Mar 18 - Apr 03")
-  String dateString = 'TBA';
-  if (event.startDate != null && event.endDate != null) {
-  dateString = "${_formatDate(event.startDate!)} - ${_formatDate(event.endDate!)}";
-  } else if (event.startDate != null) {
-  dateString = _formatDate(event.startDate!);
+    
   }
 
-  String imgUrl = _getSportPlaceholder(event.sport);
-
-  return SportsEventCard(
-  sportName: event.sport ?? 'Unknown Sport',
-  date: dateString,
-  location: event.venue ?? 'TBA',
-  description: event.description ?? '',
-  imageUrl: imgUrl,
-  isRegistrationOpen: event.registrationOpen ?? false,
-  onRegister: () {
-  Get.snackbar('Registration Started', 'You are registering for ${event.sport}', snackPosition: SnackPosition.BOTTOM, backgroundColor: AppColors.primaryBlue ?? Colors.blue, colorText: Colors.white, margin: const EdgeInsets.all(16));
-  },
-  onCardTap: () {
-  Get.to(() => SportsEventDetailView(
-  event: event,
-  imageUrl: imgUrl,
-  displayDate: dateString,
-  ));
-  },
-  );
-  },
-  );
-  }),
-  ),
-  ],
-  ),
-  );
-}
-
-String _formatDate(String rawDate) {
-  try {
-    DateTime dt = DateTime.parse(rawDate);
-    List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return "${months[dt.month - 1]} ${dt.day}";
-  } catch (e) {
-    return rawDate;
+  String _formatDate(String rawDate) {
+    try {
+      DateTime dt = DateTime.parse(rawDate);
+      List<String> months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      return "${months[dt.month - 1]} ${dt.day}";
+    } catch (e) {
+      return rawDate;
+    }
   }
-}
 
-String _getSportPlaceholder(String? sport) {
-  if (sport == null) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
-  String s = sport.toLowerCase();
+  String _getSportPlaceholder(String? sport) {
+    if (sport == null)
+      return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
+    String s = sport.toLowerCase();
 
-  if (s.contains('volleyball')) return 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1';
-  if (s.contains('basketball')) return 'https://images.unsplash.com/photo-1546519638-68e109498ffc';
-  if (s.contains('cricket')) return 'https://images.unsplash.com/photo-1531415074968-036ba1b575da';
-  if (s.contains('football')) return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55';
-  if (s.contains('chess')) return 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b';
-  if (s.contains('badminton')) return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea';
-  if (s.contains('esport') || s.contains('gaming')) return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
-  if (s.contains('power') || s.contains('weight')) return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
+    if (s.contains('volleyball'))
+      return 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1';
+    if (s.contains('basketball'))
+      return 'https://images.unsplash.com/photo-1546519638-68e109498ffc';
+    if (s.contains('cricket'))
+      return 'https://images.unsplash.com/photo-1531415074968-036ba1b575da';
+    if (s.contains('football'))
+      return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55';
+    if (s.contains('chess'))
+      return 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b';
+    if (s.contains('badminton'))
+      return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea';
+    if (s.contains('esport') || s.contains('gaming'))
+      return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
+    if (s.contains('power') || s.contains('weight'))
+      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
 
-  return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211'; // General sports
-}
+    return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211'; // General sports
+  }
+     Future<void> _launchUrl(String uri) async {
+  final Uri _url = Uri.parse(uri);
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
+  }
 }
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -194,18 +309,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: isDark ? AppColors.darkGrey : AppColors.slate50,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: true,
       leading:
-      showBackButton
-          ? IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new_rounded,
-          color: iconColor,
-          size: AppSizes.x20,
-        ),
-        onPressed: () => Get.back(),
-      )
-          : null,
+          showBackButton
+              ? IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: iconColor,
+                  size: AppSizes.x20,
+                ),
+                onPressed: () => Get.back(),
+              )
+              : null,
       title: Text(
         title,
         style: theme.textTheme.titleLarge?.copyWith(
@@ -250,7 +366,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         height:
-                        1, // Centers the text nicely without extra padding
+                            1, // Centers the text nicely without extra padding
                       ),
                       textAlign: TextAlign.center,
                     ),

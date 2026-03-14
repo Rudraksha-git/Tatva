@@ -34,7 +34,7 @@ class HomeController extends GetxController {
   Future<void> fetchAnnouncements() async {
     try {
       isAnnouncementsLoading(true);
-      final response = await _dio.get('https://tatva-backend-uct2.onrender.com/api/anouncements');
+      final response = await _dio.get('https://tatva-backend-uct2.onrender.com/api/announcements');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         List<dynamic> rawData = [];

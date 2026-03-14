@@ -8,6 +8,7 @@ class EventModel {
   String? category;
   List<String>? tags;
   String? event;
+  String? posterUrl;
   String? description;
   String? startDate;
   String? endDate;
@@ -16,6 +17,7 @@ class EventModel {
   Schedule? schedule;
   bool? registrationOpen;
   String? rulebookUrl;
+  String? registrationUrl;
   List<String>? coordinator;
 
   EventModel({
@@ -30,12 +32,14 @@ class EventModel {
     this.event,
     this.description,
     this.startDate,
+    this.posterUrl,
     this.endDate,
     this.venue,
     this.teamSize,
     this.schedule,
     this.registrationOpen,
     this.rulebookUrl,
+    this.registrationUrl,
     this.coordinator,
   });
 
@@ -46,10 +50,12 @@ class EventModel {
     location = json['location'];
     club = json['club'];
     clubTagline = json['clubTagline'];
+    registrationUrl = json['registrationUrl'];
     category = json['category'];
     tags = json['tags'] != null ? List<String>.from(json['tags']) : [];
     event = json['event'];
     description = json['description'];
+    posterUrl = json['posterUrl'];
     startDate = json['startDate'];
     endDate = json['endDate'];
     venue = json['venue'];

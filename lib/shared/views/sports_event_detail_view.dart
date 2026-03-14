@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fest_app/config/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/app_sizes.dart';
 import '../../core/models/sports_event_model.dart';
@@ -29,126 +30,173 @@ class SportsEventDetailView extends StatelessWidget {
         title: event.sport ?? 'Sports Details',
         showBackButton: true,
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Banner
-                Image.network(
-                  imageUrl,
-                  height: 220,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(height: 220, color: Colors.grey[300], child: const Icon(Icons.sports, size: 50, color: Colors.grey)),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(event.sport ?? 'Unknown Sport', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.black87)),
-                      const SizedBox(height: 8),
-
-                      Text(event.tagline ?? 'The Arena Awaits', style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.grey[600])),
-                      const SizedBox(height: 20),
-
-                      // Info Box
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(color: Colors.green[50], borderRadius: BorderRadius.circular(16)),
-                        child: Column(
-                          children: [
-                            _infoRow(Icons.calendar_today, "Tournament Dates", displayDate),
-                            const SizedBox(height: 12),
-                            _infoRow(Icons.location_on, "Venue", event.venue ?? "TBA"),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      const Text("About the Tournament", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      const SizedBox(height: 8),
-                      Text(event.description ?? "No description available.", style: TextStyle(fontSize: 15, height: 1.6, color: Colors.grey[800])),
-                      const SizedBox(height: 24),
-
-                      // Formats (Uses event.format instead of tags)
-                      if (event.format != null && event.format!.isNotEmpty) ...[
-                        const Text("Match Formats", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: event.format!.map((format) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(color: Colors.grey[100], border: Border.all(color: Colors.grey[300]!), borderRadius: BorderRadius.circular(20)),
-                            child: Text(format, style: TextStyle(fontSize: 12, color: Colors.grey[700], fontWeight: FontWeight.w600)),
-                          )).toList(),
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-
-                      // Coordinators
-                      if (event.coordinator != null && event.coordinator!.isNotEmpty) ...[
-                        const Text("Coordinators", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 8),
-                        Text(event.coordinator!.join(", "), style: TextStyle(fontSize: 15, color: Colors.grey[800])),
-                        const SizedBox(height: 24),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Bottom Action Bar
-          Positioned(
-            bottom: 0, left: 0, right: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), offset: const Offset(0, -4), blurRadius: 10)]),
-              child: Row(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 100),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        if (event.rulebookUrl != null) {
-                          Get.snackbar('Rulebook', 'Opening Rulebook...', snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Get.snackbar('Rulebook', 'No rulebook available.', snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14), side: BorderSide(color: Colors.blue[600]!), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22))),
-                      child: Text("Rulebook", style: TextStyle(color: Colors.blue[600], fontWeight: FontWeight.bold)),
-                    ),
+                  // Banner
+                  Image.network(
+                    imageUrl,
+                    height: 220,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(height: 220, color: Colors.grey[300], child: const Icon(Icons.sports, size: 50, color: Colors.grey)),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: isRegOpen ? () => Get.snackbar('Registration Started', 'You are registering for ${event.sport}', snackPosition: SnackPosition.BOTTOM, backgroundColor: AppColors.primaryBlue ?? Colors.blue, colorText: Colors.white) : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFCA28),
-                        disabledBackgroundColor: Colors.grey[300],
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-                      ),
-                      child: Text(isRegOpen ? 'Register Now' : 'Closed', style: TextStyle(color: isRegOpen ? Colors.black87 : Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 15)),
+        
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(event.sport ?? 'Unknown Sport', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.black87)),
+                        const SizedBox(height: 8),
+        
+                        Text(event.tagline ?? 'The Arena Awaits', style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.grey[600])),
+                        const SizedBox(height: 20),
+        
+                        // Info Box
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(color: Colors.green[50], borderRadius: BorderRadius.circular(16)),
+                          child: Column(
+                            children: [
+                              _infoRow(Icons.calendar_today, "Tournament Dates", displayDate),
+                              const SizedBox(height: 12),
+                              _infoRow(Icons.location_on, "Venue", event.venue ?? "TBA"),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+        
+                        const Text("About the Tournament", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                        const SizedBox(height: 8),
+                        Text(event.description ?? "No description available.", style: TextStyle(fontSize: 15, height: 1.6, color: Colors.grey[800])),
+                        const SizedBox(height: 24),
+        
+                        // Formats (Uses event.format instead of tags)
+                        if (event.format != null && event.format!.isNotEmpty) ...[
+                          const Text("Match Formats", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: event.format!.map((format) => Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(color: Colors.grey[100], border: Border.all(color: Colors.grey[300]!), borderRadius: BorderRadius.circular(20)),
+                              child: Text(format, style: TextStyle(fontSize: 12, color: Colors.grey[700], fontWeight: FontWeight.w600)),
+                            )).toList(),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+        
+                        // Coordinators
+                        if (event.coordinator != null && event.coordinator!.isNotEmpty) ...[
+                          const Text("Coordinators", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                          const SizedBox(height: 8),
+                          Text(event.coordinator!.join(", "), style: TextStyle(fontSize: 15, color: Colors.grey[800])),
+                          const SizedBox(height: 24),
+                        ],
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+        
+            // Bottom Action Bar
+            Positioned(
+              bottom: 0, left: 0, right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), offset: const Offset(0, -4), blurRadius: 10)]),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          if (event.rulebookUrl != null) {
+                            _launchUrl(event.rulebookUrl!);
+                          } else {
+                            Get.snackbar(
+                              'Rulebook',
+                              'No rulebook available.',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: event.rulebookUrl != null ? Colors.blue[600]! : Colors.blue[200]!),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                        ),
+                        child: Text(
+                          "Rulebook",
+                          style: TextStyle(
+                            color: event.rulebookUrl != null ? Colors.blue[600]! : Colors.blue[200]!,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed:(){
+                          if (event.registrationUrl != null) {
+                            _launchUrl(event.registrationUrl!);
+                          } else {
+                            Get.snackbar(
+                              'Registration',
+                              event.registrationUrl == null
+                                  ? 'Registration link not available.'
+                                  : 'Registration is currently closed.',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          }
+                        },
+                           
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFCA28),
+                          disabledBackgroundColor: Colors.grey[300],
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                        ),
+                        child: Text(
+                          event.registrationUrl!=null ? 'Register Now' : 'Coming Soon',
+                          style: TextStyle(
+                            color: event.registrationUrl!=null ? Colors.black87 : Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+     Future<void> _launchUrl(String uri) async {
+  final Uri _url = Uri.parse(uri);
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
   }
 
   Widget _infoRow(IconData icon, String title, String value) {

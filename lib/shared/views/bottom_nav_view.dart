@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import '../../config/app_sizes.dart';
 import '../../config/app_colors.dart';
 import '../controllers/bottom_nav_controller.dart';
-import '../../student/views/profile_view.dart';
 import 'home_view.dart';
 
 class BottomNavView extends StatelessWidget {
@@ -20,7 +19,7 @@ class BottomNavView extends StatelessWidget {
      HomeView(),// Replace with HomeView
       const CulturalEventView(), // Cultural Events
        SportsEventView(), // Sports Events (You can pass a parameter to filter if your EventView supports it)
-      const ProfileView(),
+       Center(child: Text("Coming soon for you")),
     ];
 
     return Scaffold(

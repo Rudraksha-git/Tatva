@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../config/app_colors.dart';
+import '../../config/app_sizes.dart';
 import '../controllers/home_controller.dart';
-import 'event_detail_view.dart';
 
 class AllAnnouncementsView extends StatelessWidget {
-  final HomeController controller;
+  final HomeController controller = Get.find<HomeController>();
 
-  const AllAnnouncementsView({super.key, required this.controller});
+   AllAnnouncementsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,4 +95,57 @@ class AllAnnouncementsView extends StatelessWidget {
       }),
     );
   }
+}
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final bool showBackButton;
+  final int notificationCount;
+  final List<Widget>? extraActions;
+
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.showBackButton = false,
+    this.notificationCount = 0,
+    this.extraActions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final iconColor = isDark ? AppColors.white : AppColors.darkGrey;
+
+    return AppBar(
+      backgroundColor: isDark ? AppColors.darkGrey : AppColors.slate50,
+      elevation: 0,
+      centerTitle: true,
+      leading:
+          showBackButton
+              ? IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: iconColor,
+                  size: AppSizes.x20,
+                ),
+                onPressed: () => Get.back(),
+              )
+              : null,
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: iconColor,
+        ),
+      ),
+      actions: [
+        ...?extraActions,
+        AppSizes.gapW8,
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

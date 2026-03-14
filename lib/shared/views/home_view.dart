@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
-import 'all_anouncement._view.dart';
+import 'all_anouncement._view.dart' hide CustomAppBar;
 import 'event_detail_view.dart';
 
 // Import your other screens
@@ -189,7 +189,7 @@ class HomeView extends StatelessWidget {
               children: [
                 const Text("Announcements", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black87, letterSpacing: -0.5)),
                 TextButton(
-                  onPressed: () => Get.to(() => AllAnnouncementsView(controller: controller)),
+                  onPressed: () => Get.to(() => AllAnnouncementsView()),
                   child: const Text("See All", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
                 ),
               ],
@@ -284,7 +284,7 @@ class HomeView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text("Trending Events", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black87, letterSpacing: -0.5)),
-              TextButton(onPressed: () {}, child: const Text("View All", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold))),
+             
             ],
           ),
         ),
@@ -317,7 +317,7 @@ class HomeView extends StatelessWidget {
 
                 MaterialColor badgeColor = _getBadgeColor(category);
                 String badgeText = _getShortCategory(category);
-                String imageUrl = _getPlaceholderImage(category);
+                String imageUrl = event['posterUrl']?? _getPlaceholderImage(category);
 
                 return _buildMiniEventCard(title, date, location, badgeText, badgeColor, imageUrl);
               },

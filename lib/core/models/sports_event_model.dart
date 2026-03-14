@@ -12,6 +12,7 @@ class SportsEventModel {
   String? venue;
   bool? registrationOpen;
   String? rulebookUrl;
+  String? registrationUrl;
   String? posterUrl;
   List<String>? coordinator;
   List<String>? coCoordinator;
@@ -26,6 +27,7 @@ class SportsEventModel {
     this.description,
     this.format,
     this.startDate,
+    this.registrationUrl,
     this.endDate,
     this.venue,
     this.registrationOpen,
@@ -48,6 +50,7 @@ class SportsEventModel {
     endDate = json['endDate'];
     venue = json['venue'];
     registrationOpen = json['registrationOpen'];
+    registrationUrl = json['registrationUrl'];
     rulebookUrl = json['rulebookUrl'];
     posterUrl = json['posterUrl'];
 
