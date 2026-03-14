@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/services/notification_services.dart';
 import 'bottom_nav_view.dart';
 
 // Adjust this import to point to your HomeView
@@ -27,6 +29,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
+
+
 
     // 1. Spinning Rings Controller (Continuous)
     _spinController = AnimationController(
@@ -60,6 +64,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     );
 
     _entranceController.forward();
+        _setupFCM();
 
     // Navigate to Home after 4.5 seconds
     Timer(const Duration(milliseconds: 4500), () {
@@ -78,7 +83,23 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _entranceController.dispose();
     super.dispose();
   }
+Future<void> _setupFCM() async {
+    // 3. SUBSCRIBE EVERYONE TO A TOPIC
+    await FirebaseMessaging.instance.subscribeToTopic('all_users');
 
+    // 4. HANDLE FOREGROUND MESSAGES
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        // Trigger your existing local notification service
+        Get.find<NotificationService>().showNotification(
+          id: message.hashCode, 
+          title: message.notification!.title ?? 'New Notification', 
+          body: message.notification!.body ?? '',
+        );
+      }
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,7 +199,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 child: Column(
                   children: [
                     const Text(
-                      "POWERED BY",
+                      "DEVELOPED BY",
                       style: TextStyle(
                         color: Colors.white54,
                         fontSize: 10,

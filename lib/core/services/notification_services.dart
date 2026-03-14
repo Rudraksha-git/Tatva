@@ -11,7 +11,7 @@ class NotificationService extends GetxService {
     // '@mipmap/ic_launcher' refers to the default app icon. 
     // Make sure you have an icon in android/app/src/main/res/drawable if you use a custom name.
     const AndroidInitializationSettings androidSettings = 
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
     // 2. Setup iOS/macOS initialization settings
     const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(

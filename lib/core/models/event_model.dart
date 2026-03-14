@@ -19,6 +19,9 @@ class EventModel {
   String? rulebookUrl;
   String? registrationUrl;
   List<String>? coordinator;
+  List<String>? contactMain;
+  List<String>? contactSub;
+  List<String>? coCoordinator;
 
   EventModel({
     this.id,
@@ -41,6 +44,9 @@ class EventModel {
     this.rulebookUrl,
     this.registrationUrl,
     this.coordinator,
+    this.contactMain,
+    this.contactSub,
+    this.coCoordinator,   
   });
 
   EventModel.fromJson(Map<String, dynamic> json) {
@@ -63,7 +69,26 @@ class EventModel {
     teamSize = json['teamSize'] != null ? TeamSize.fromJson(json['teamSize']) : null;
     schedule = json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null;
     registrationOpen = json['registrationOpen'];
-    coordinator = json['coordinator'] != null ? List<String>.from(json['coordinator']) : [];
+    coordinator = json['coordinator'] is List
+        ? List<String>.from(json['coordinator'])
+        : (json['coordinator'] is String && json['coordinator'].isNotEmpty
+            ? [json['coordinator']]
+            : []);
+    coCoordinator = json['coCoordinator'] is List
+        ? List<String>.from(json['coCoordinator'])
+        : (json['coCoordinator'] is String && json['coCoordinator'].isNotEmpty
+            ? [json['coCoordinator']]
+            : []);
+    contactMain = json['contactMain'] is List
+        ? List<String>.from(json['contactMain'])
+        : (json['contactMain'] is String && json['contactMain'].isNotEmpty
+            ? [json['contactMain']]
+            : []);
+    contactSub = json['contactSub'] is List
+        ? List<String>.from(json['contactSub'])
+        : (json['contactSub'] is String && json['contactSub'].isNotEmpty
+            ? [json['contactSub']]
+            : []);
   }
 }
 

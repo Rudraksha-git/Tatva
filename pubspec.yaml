@@ -43,6 +43,7 @@ dependencies:
   dio: ^5.9.2
   url_launcher: ^6.3.2
   flutter_launcher_icons: ^0.14.4
+  firebase_messaging: ^16.1.2
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,10 @@ flutter:
     - assets/tatvabg.jpeg
     - assets/images/tatva_logo.png
     - assets/images/hackslash-logo.png
+    - assets/images/PKJDESKTOP.jpeg
+    - assets/images/PRHSWD.jpeg
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

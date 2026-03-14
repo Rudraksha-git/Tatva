@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   var hours = '00'.obs;
   var minutes = '00'.obs;
   var seconds = '00'.obs;
+  var isFestLive = false.obs;
 
   // API Data States
   var announcements = <Map<String, dynamic>>[].obs;
@@ -118,6 +119,7 @@ class HomeController extends GetxController {
     if (difference.isNegative) {
       _timer?.cancel();
       days.value = '00'; hours.value = '00'; minutes.value = '00'; seconds.value = '00';
+      isFestLive.value = true;
     } else {
       days.value = difference.inDays.toString().padLeft(2, '0');
       hours.value = (difference.inHours % 24).toString().padLeft(2, '0');

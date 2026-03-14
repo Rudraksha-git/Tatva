@@ -48,6 +48,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880825229325:android:b0ff4719b995037e63f544",
+        "android_client_info": {
+          "package_name": "com.nitp.festapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880825229325-2l8qrc3pkto77r8q7mehn63aeuaf14jc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCk37RaX3uFoCAqEjoNFCCGBIvLMw-ADg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880825229325-2l8qrc3pkto77r8q7mehn63aeuaf14jc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "880825229325-m7a3du6j31lpigqfp69oc0fnkp9a8k5t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.festApp"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

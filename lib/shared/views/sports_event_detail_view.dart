@@ -93,11 +93,67 @@ class SportsEventDetailView extends StatelessWidget {
                           const SizedBox(height: 24),
                         ],
         
-                        // Coordinators
+                        // Coordinators with contact info
                         if (event.coordinator != null && event.coordinator!.isNotEmpty) ...[
                           const Text("Coordinators", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
                           const SizedBox(height: 8),
-                          Text(event.coordinator!.join(", "), style: TextStyle(fontSize: 15, color: Colors.grey[800])),
+                          ...List.generate(event.coordinator!.length, (i) {
+                            final name = event.coordinator![i];
+                            final contact = (event.contactMain != null && event.contactMain!.length > i)
+                                ? event.contactMain![i]
+                                : null;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(child: Text(name, style: const TextStyle(fontSize: 15, color: Colors.grey))),
+                                  if (contact != null && contact.isNotEmpty)
+                                    GestureDetector(
+                                      onTap: () => _launchCall(contact),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.phone, color: Colors.blue[600], size: 18),
+                                          const SizedBox(width: 4),
+                                          Text(contact, style: const TextStyle(fontSize: 15, color: Colors.blue, decoration: TextDecoration.underline)),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          }),
+                          const SizedBox(height: 24),
+                        ],
+
+                        // Co-Coordinators with contact info
+                        if (event.coCoordinator != null && event.coCoordinator!.isNotEmpty) ...[
+                          const Text("Co-Coordinators", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                          const SizedBox(height: 8),
+                          ...List.generate(event.coCoordinator!.length, (i) {
+                            final name = event.coCoordinator![i];
+                            final contact = (event.contactSub != null && event.contactSub!.length > i)
+                                ? event.contactSub![i]
+                                : null;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(child: Text(name, style: const TextStyle(fontSize: 15, color: Colors.grey))),
+                                  if (contact != null && contact.isNotEmpty)
+                                    GestureDetector(
+                                      onTap: () => _launchCall(contact),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.phone, color: Colors.blue[600], size: 18),
+                                          const SizedBox(width: 4),
+                                          Text(contact, style: const TextStyle(fontSize: 15, color: Colors.blue, decoration: TextDecoration.underline)),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          }),
                           const SizedBox(height: 24),
                         ],
                       ],
@@ -199,6 +255,13 @@ class SportsEventDetailView extends StatelessWidget {
   }
   }
 
+  Future<void> _launchCall(String phoneNumber) async {
+    final Uri _url = Uri(scheme: 'tel', path: phoneNumber);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   Widget _infoRow(IconData icon, String title, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,54 +326,54 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: iconColor,
         ),
       ),
-      actions: [
-        ...?extraActions,
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.notifications_none_rounded,
-                color: iconColor,
-                size: AppSizes.x28,
-              ),
-              onPressed: onNotificationTap ?? () {},
-            ),
-            if (notificationCount > 0)
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.googleRed,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: Center(
-                    child: Text(
-                      notificationCount > 99
-                          ? '99+'
-                          : notificationCount.toString(),
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        height:
-                        1, // Centers the text nicely without extra padding
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        AppSizes.gapW8,
-      ],
+      // actions: [
+      //   ...?extraActions,
+      //   Stack(
+      //     alignment: Alignment.center,
+      //     children: [
+      //       IconButton(
+      //         icon: Icon(
+      //           Icons.notifications_none_rounded,
+      //           color: iconColor,
+      //           size: AppSizes.x28,
+      //         ),
+      //         onPressed: onNotificationTap ?? () {},
+      //       ),
+      //       if (notificationCount > 0)
+      //         Positioned(
+      //           right: 8,
+      //           top: 8,
+      //           child: Container(
+      //             padding: const EdgeInsets.all(4),
+      //             decoration: const BoxDecoration(
+      //               color: AppColors.googleRed,
+      //               shape: BoxShape.circle,
+      //             ),
+      //             constraints: const BoxConstraints(
+      //               minWidth: 16,
+      //               minHeight: 16,
+      //             ),
+      //             child: Center(
+      //               child: Text(
+      //                 notificationCount > 99
+      //                     ? '99+'
+      //                     : notificationCount.toString(),
+      //                 style: const TextStyle(
+      //                   color: AppColors.white,
+      //                   fontSize: 10,
+      //                   fontWeight: FontWeight.bold,
+      //                   height:
+      //                   1, // Centers the text nicely without extra padding
+      //                 ),
+      //                 textAlign: TextAlign.center,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //     ],
+      //   ),
+      //   AppSizes.gapW8,
+      // ],
     );
   }
 

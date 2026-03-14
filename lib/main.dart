@@ -2,6 +2,7 @@ import 'package:fest_app/config/app_theme.dart';
 import 'package:fest_app/firebase_options.dart';
 import 'package:fest_app/shared/views/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart'; // ADDED
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +10,22 @@ import 'package:get/get.dart';
 import 'core/services/notification_services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+// 1. ADD BACKGROUND HANDLER (Must be a top-level function)
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // 2. REGISTER BACKGROUND HANDLER
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await _requestNotificationPermission();
 
@@ -21,10 +36,6 @@ void main() async {
     yield LicenseEntryWithLineBreaks(<String>['google_fonts'], license);
   });
 
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-);
   runApp(const MyApp());
 }
 
@@ -47,33 +58,6 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
       home: SplashScreen(),
-    );
-  }
-}
-
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('GetX Notifications')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            try{
-            Get.find<NotificationService>().showNotification(
-              id: 0, 
-              title: 'Hello There!', 
-              body: 'This is a test notification from GetX Service.',
-            );
-          }catch(e){
-            print('Error showing notification: $e');
-          }},
-          child: const Text('Show Notification'),
-        ),
-      ),
     );
   }
 }

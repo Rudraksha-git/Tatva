@@ -16,6 +16,8 @@ class SportsEventModel {
   String? posterUrl;
   List<String>? coordinator;
   List<String>? coCoordinator;
+  List<String>? contactMain;
+  List<String>? contactSub;
 
   SportsEventModel({
     this.id,
@@ -33,6 +35,8 @@ class SportsEventModel {
     this.registrationOpen,
     this.rulebookUrl,
     this.posterUrl,
+    this.contactMain,
+    this.contactSub,
     this.coordinator,
     this.coCoordinator,
   });
@@ -55,7 +59,25 @@ class SportsEventModel {
     posterUrl = json['posterUrl'];
 
     // Safely handle null arrays
-    coordinator = json['coordinator'] != null ? List<String>.from(json['coordinator']) : [];
-    coCoordinator = json['coCoordinator'] != null ? List<String>.from(json['coCoordinator']) : [];
+    coordinator = json['coordinator'] is List
+        ? List<String>.from(json['coordinator'])
+        : (json['coordinator'] is String && json['coordinator'].isNotEmpty
+            ? [json['coordinator']]
+            : []);
+    coCoordinator = json['coCoordinator'] is List
+        ? List<String>.from(json['coCoordinator'])
+        : (json['coCoordinator'] is String && json['coCoordinator'].isNotEmpty
+            ? [json['coCoordinator']]
+            : []);
+    contactMain = json['contactMain'] is List
+        ? List<String>.from(json['contactMain'])
+        : (json['contactMain'] is String && json['contactMain'].isNotEmpty
+            ? [json['contactMain']]
+            : []);
+    contactSub = json['contactSub'] is List
+        ? List<String>.from(json['contactSub'])
+        : (json['contactSub'] is String && json['contactSub'].isNotEmpty
+            ? [json['contactSub']]
+            : []);
   }
 }

@@ -1,13 +1,39 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../controllers/home_controller.dart';
 import 'all_anouncement._view.dart' hide CustomAppBar;
 import 'event_detail_view.dart';
 
 // Import your other screens
 
+// Helper function to trigger the phone dialer safely
+Future<void> _makePhoneCall(String phoneNumber) async {
+  final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: cleanNumber,
+  );
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    debugPrint('Could not launch $phoneNumber');
+  }
+}
 
+// Helper function to trigger the email app
+Future<void> _sendEmail(String email) async {
+  final Uri launchUri = Uri(
+    scheme: 'mailto',
+    path: email,
+  );
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    debugPrint('Could not launch $email');
+  }
+}
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -30,14 +56,16 @@ class HomeView extends StatelessWidget {
             // 1. Hero Banner with Glassmorphic Countdown
             _buildHeroBanner(controller),
 
-            // 2. Modern Quick Links (Explore section removed, pure links kept)
-
-
-            // 3. Announcements Section (API Driven)
+            // 2. Announcements Section (API Driven)
             _buildAnnouncementsSection(controller),
 
-            // 4. Trending Events Carousel (API Driven)
-            _buildTrendingEventsSection(controller),
+               // 3. Messages from Leadership (Made more compact)
+            _buildMessagesSection(),
+
+            // 4. Student Coordinators Contact Section (Made more compact)
+            _buildCoordinatorsSection(),
+
+            const SizedBox(height: 40),
 
             const SizedBox(height: 40),
           ],
@@ -99,29 +127,56 @@ class HomeView extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
                   ),
-                  child: Column(
-                    children: [
-                      const Text("FEST BEGINS IN", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 3)),
-                      const SizedBox(height: 12),
-                      Obx(() => Row(
+                  child: Obx(() {
+                    if (controller.isFestLive.value) {
+                      return const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildTimeBox(controller.days.value, "DAYS"),
-                          const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
-                          _buildTimeBox(controller.hours.value, "HRS"),
-                          const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
-                          _buildTimeBox(controller.minutes.value, "MIN"),
-                          const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
-                          _buildTimeBox(controller.seconds.value, "SEC", isAccent: true),
+                          Text(
+                            "FEST IS LIVE!",
+                            style: TextStyle(
+                                color: Color(0xFFFFCA28),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2,
+                                shadows: [
+                                  BoxShadow(
+                                      color: Color(0xFFFFCA28), blurRadius: 15)
+                                ]),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "16th March - 4th April",
+                            style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
                         ],
-                      )),
-                    ],
-                  ),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        const Text("FEST BEGINS IN", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 3)),
+                        const SizedBox(height: 12),
+                        Obx(() => Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildTimeBox(controller.days.value, "DAYS"),
+                                const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+                                _buildTimeBox(controller.hours.value, "HRS"),
+                                const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+                                _buildTimeBox(controller.minutes.value, "MIN"),
+                                const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+                                _buildTimeBox(controller.seconds.value, "SEC", isAccent: true),
+                              ],
+                            )),
+                      ],
+                    );
+                  }),
                 ),
               ),
             ),
@@ -154,26 +209,26 @@ class HomeView extends StatelessWidget {
   // --- 2. QUICK LINKS SECTION ---
 
 
-  Widget _buildModernLink(IconData icon, String label, Color bgColor, Color iconColor, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            height: 70, width: 70,
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: iconColor.withOpacity(0.15), blurRadius: 12, offset: const Offset(0, 6))],
-            ),
-            child: Icon(icon, color: iconColor, size: 32),
-          ),
-          const SizedBox(height: 10),
-          Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.black87)),
-        ],
-      ),
-    );
-  }
+  // Widget _buildModernLink(IconData icon, String label, Color bgColor, Color iconColor, VoidCallback onTap) {
+  //   return GestureDetector(
+  //     onTap: onTap,
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           height: 70, width: 70,
+  //           decoration: BoxDecoration(
+  //             color: bgColor,
+  //             borderRadius: BorderRadius.circular(20),
+  //             boxShadow: [BoxShadow(color: iconColor.withOpacity(0.15), blurRadius: 12, offset: const Offset(0, 6))],
+  //           ),
+  //           child: Icon(icon, color: iconColor, size: 32),
+  //         ),
+  //         const SizedBox(height: 10),
+  //         Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.black87)),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // --- 3. ANNOUNCEMENTS SECTION ---
   Widget _buildAnnouncementsSection(HomeController controller) {
@@ -274,108 +329,321 @@ class HomeView extends StatelessWidget {
   }
 
   // --- 4. TRENDING EVENTS SECTION ---
-  Widget _buildTrendingEventsSection(HomeController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("Trending Events", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black87, letterSpacing: -0.5)),
+  // Widget _buildTrendingEventsSection(HomeController controller) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.symmetric(horizontal: 20),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const Text("Trending Events", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black87, letterSpacing: -0.5)),
              
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 290,
-          child: Obx(() {
-            if (controller.isTrendingLoading.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+  //           ],
+  //         ),
+  //       ),
+  //       const SizedBox(height: 8),
+  //       SizedBox(
+  //         height: 290,
+  //         child: Obx(() {
+  //           if (controller.isTrendingLoading.value) {
+  //             return const Center(child: CircularProgressIndicator());
+  //           }
 
-            if (controller.trendingEvents.isEmpty) {
-              return Center(
-                child: Text("No trending events found.", style: TextStyle(color: Colors.grey[500], fontSize: 14)),
-              );
-            }
+  //           if (controller.trendingEvents.isEmpty) {
+  //             return Center(
+  //               child: Text("No trending events found.", style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+  //             );
+  //           }
 
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: controller.trendingEvents.length,
-              itemBuilder: (context, index) {
-                var event = controller.trendingEvents[index];
+  //           return ListView.builder(
+  //             scrollDirection: Axis.horizontal,
+  //             physics: const BouncingScrollPhysics(),
+  //             padding: const EdgeInsets.symmetric(horizontal: 16),
+  //             itemCount: controller.trendingEvents.length,
+  //             itemBuilder: (context, index) {
+  //               var event = controller.trendingEvents[index];
 
-                String title = event['event'] ?? event['sport'] ?? 'Upcoming Event';
-                String location = event['venue'] ?? event['location'] ?? 'TBA';
-                String category = event['category'] ?? event['type'] ?? 'EVENT';
-                String date = _formatDate(event['startDate']);
+  //               String title = event['event'] ?? event['sport'] ?? 'Upcoming Event';
+  //               String location = event['venue'] ?? event['location'] ?? 'TBA';
+  //               String category = event['category'] ?? event['type'] ?? 'EVENT';
+  //               String date = _formatDate(event['startDate']);
 
-                MaterialColor badgeColor = _getBadgeColor(category);
-                String badgeText = _getShortCategory(category);
-                String imageUrl = event['posterUrl']?? _getPlaceholderImage(category);
+  //               MaterialColor badgeColor = _getBadgeColor(category);
+  //               String badgeText = _getShortCategory(category);
+  //               String imageUrl = event['posterUrl']?? _getPlaceholderImage(category);
 
-                return _buildMiniEventCard(title, date, location, badgeText, badgeColor, imageUrl);
-              },
-            );
-          }),
-        ),
-      ],
-    );
-  }
+  //               return _buildMiniEventCard(title, date, location, badgeText, badgeColor, imageUrl);
+  //             },
+  //           );
+  //         }),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildMiniEventCard(String title, String date, String location, String badgeText, MaterialColor badgeColor, String imageUrl) {
-    return Container(
-      width: 250,
-      margin: const EdgeInsets.only(right: 16, bottom: 12, top: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey[200]!),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 5))],
-      ),
+  // Widget _buildMiniEventCard(String title, String date, String location, String badgeText, MaterialColor badgeColor, String imageUrl) {
+  //   return Container(
+  //     width: 250,
+  //     margin: const EdgeInsets.only(right: 16, bottom: 12, top: 4),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(20),
+  //       border: Border.all(color: Colors.grey[200]!),
+  //       boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 5))],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+  //           child: Image.network(imageUrl, height: 140, width: double.infinity, fit: BoxFit.cover),
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.all(16.0),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87), maxLines: 1, overflow: TextOverflow.ellipsis)),
+  //                   Container(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //                     decoration: BoxDecoration(color: badgeColor[50], borderRadius: BorderRadius.circular(8)),
+  //                     child: Text(badgeText, style: TextStyle(color: badgeColor[700], fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 12),
+  //               Row(
+  //                 children: [
+  //                   Icon(Icons.calendar_today, size: 14, color: Colors.grey[500]),
+  //                   const SizedBox(width: 6),
+  //                   Text(date, style: TextStyle(color: Colors.grey[700], fontSize: 13, fontWeight: FontWeight.w500)),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 6),
+  //               Row(
+  //                 children: [
+  //                   Icon(Icons.location_on, size: 14, color: Colors.grey[500]),
+  //                   const SizedBox(width: 6),
+  //                   Expanded(child: Text(location, style: TextStyle(color: Colors.grey[700], fontSize: 13), maxLines: 1, overflow: TextOverflow.ellipsis)),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+
+// --- 3. MESSAGES SECTION (Reduced Size & Fixed Image) ---
+  Widget _buildMessagesSection() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24, left: 20, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Image.network(imageUrl, height: 140, width: double.infinity, fit: BoxFit.cover),
+          // Director's Message
+          _buildLightMessageCard(
+            title: "Message from the Director's Desk",
+            subtitle: "Dr. P.K. Jain, Director, NIT Patna",
+            message: "At our institute, we believe that true education extends beyond classrooms. Cultural, sports, and literary activities play a vital role in shaping confident, creative, and responsible individuals. The Student Activity Centre app is a step towards encouraging students to explore their talents, participate actively, and grow through diverse learning experiences.",
+            imagePath: "assets/images/PKJDESKTOP.jpeg",
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+          const SizedBox(height: 12), // Reduced spacing
+
+          // Fest President Message
+          _buildLightMessageCard(
+            title: "Message from Fest President",
+            subtitle: "Dr. Prabhat Kumar, Dean Student Welfare, NIT Patna",
+            message: "It gives me great pleasure to see the Student Activity Centre App becoming an integral part of our fest. The app has enabled seamless event updates and registrations, making participation easier for everyone. It reflects our commitment to creating an organized, engaging, and vibrant platform for students to celebrate talent and teamwork.",
+            imagePath: "assets/images/PRHSWD.jpeg",
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLightMessageCard({required String title, required String subtitle, required String message, required String imagePath}) {
+    return Container(
+      padding: const EdgeInsets.all(16), // Reduced padding (was 20)
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16), // Slightly sharper corners
+        border: Border.all(color: Colors.grey[200]!, width: 1.5),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // FIX: Robust image loading with ClipOval
+              Container(
+                width: 44, // Reduced size (was 52)
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey[300]!, width: 1),
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Fallback icon if asset is missing
+                      return Container(
+                        color: Colors.grey[100],
+                        child: Icon(Icons.person, color: Colors.grey[400], size: 24),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(color: badgeColor[50], borderRadius: BorderRadius.circular(8)),
-                      child: Text(badgeText, style: TextStyle(color: badgeColor[700], fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                    Text(
+                      title,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87), // Reduced font
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blue[700]), // Reduced font
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.calendar_today, size: 14, color: Colors.grey[500]),
-                    const SizedBox(width: 6),
-                    Text(date, style: TextStyle(color: Colors.grey[700], fontSize: 13, fontWeight: FontWeight.w500)),
-                  ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12), // Reduced spacing
+          Text(
+            message,
+            style: TextStyle(fontSize: 13, color: Colors.grey[700], height: 1.4), // Reduced font and line-height
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- 4. FEST COORDINATORS SECTION (Reduced Size) ---
+  Widget _buildCoordinatorsSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey[200]!, width: 1.5),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4))],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(16.0), // Reduced padding
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8), // Reduced padding
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.groups_rounded, color: Colors.blue[700], size: 18), // Reduced icon
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    "Student Coordinators",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black87), // Reduced font
+                  ),
+                ],
+              ),
+            ),
+
+            // Coordinators List
+            _buildCoordinatorItem("Manaswini Patil", "8275007608", "patilr.ug22.ar@nitp.ac.in"),
+            Divider(height: 1, thickness: 1, color: Colors.grey[100], indent: 16, endIndent: 16),
+            _buildCoordinatorItem("Harshvardhan Dansena", "8319728292", "harshvardhand.dd22.ce@nitp.ac.in"),
+            const SizedBox(height: 4), // Reduced bottom padding
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCoordinatorItem(String name, String phone, String email) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0), // Reduced padding
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Avatar Placeholder
+          Container(
+            height: 40, // Reduced size (was 46)
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
+            ),
+            child: Icon(Icons.person_rounded, color: Colors.grey[400], size: 20),
+          ),
+          const SizedBox(width: 14),
+
+          // Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87), // Reduced font
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 14, color: Colors.grey[500]),
-                    const SizedBox(width: 6),
-                    Expanded(child: Text(location, style: TextStyle(color: Colors.grey[700], fontSize: 13), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                  ],
+
+                // Clickable Phone Row
+                GestureDetector(
+                  onTap: () => _makePhoneCall(phone),
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone_outlined, size: 14, color: Colors.blue[600]),
+                      const SizedBox(width: 8),
+                      Text(
+                        phone,
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey[700]), // Reduced font
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+
+                // Clickable Email Row
+                GestureDetector(
+                  onTap: () => _sendEmail(email),
+                  child: Row(
+                    children: [
+                      Icon(Icons.mail_outline_rounded, size: 14, color: Colors.blue[600]),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          email,
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey[600]), // Reduced font
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -387,42 +655,42 @@ class HomeView extends StatelessWidget {
 
   // --- HELPER METHODS ---
 
-  String _formatDate(String? rawDate) {
-    if (rawDate == null) return "TBA";
-    try {
-      DateTime dt = DateTime.parse(rawDate);
-      List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return "${months[dt.month - 1]} ${dt.day}";
-    } catch (e) {
-      return rawDate;
-    }
-  }
+  // String _formatDate(String? rawDate) {
+  //   if (rawDate == null) return "TBA";
+  //   try {
+  //     DateTime dt = DateTime.parse(rawDate);
+  //     List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  //     return "${months[dt.month - 1]} ${dt.day}";
+  //   } catch (e) {
+  //     return rawDate;
+  //   }
+  // }
 
-  MaterialColor _getBadgeColor(String category) {
-    String cat = category.toLowerCase();
-    if (cat.contains('dance')) return Colors.orange;
-    if (cat.contains('music') || cat.contains('singing')) return Colors.blue;
-    if (cat.contains('drama') || cat.contains('theatre')) return Colors.purple;
-    if (cat.contains('sport') || cat.contains('football') || cat.contains('cricket')) return Colors.green;
-    return Colors.teal;
-  }
+  // MaterialColor _getBadgeColor(String category) {
+  //   String cat = category.toLowerCase();
+  //   if (cat.contains('dance')) return Colors.orange;
+  //   if (cat.contains('music') || cat.contains('singing')) return Colors.blue;
+  //   if (cat.contains('drama') || cat.contains('theatre')) return Colors.purple;
+  //   if (cat.contains('sport') || cat.contains('football') || cat.contains('cricket')) return Colors.green;
+  //   return Colors.teal;
+  // }
 
-  String _getShortCategory(String category) {
-    String cat = category.toLowerCase();
-    if (cat.contains('dance')) return 'DANCE';
-    if (cat.contains('music') || cat.contains('singing')) return 'MUSIC';
-    if (cat.contains('drama') || cat.contains('theatre')) return 'DRAMA';
-    if (cat.contains('sport')) return 'SPORTS';
-    if (cat.contains('photo') || cat.contains('film')) return 'MEDIA';
-    return 'EVENT';
-  }
+  // String _getShortCategory(String category) {
+  //   String cat = category.toLowerCase();
+  //   if (cat.contains('dance')) return 'DANCE';
+  //   if (cat.contains('music') || cat.contains('singing')) return 'MUSIC';
+  //   if (cat.contains('drama') || cat.contains('theatre')) return 'DRAMA';
+  //   if (cat.contains('sport')) return 'SPORTS';
+  //   if (cat.contains('photo') || cat.contains('film')) return 'MEDIA';
+  //   return 'EVENT';
+  // }
 
-  String _getPlaceholderImage(String category) {
-    String cat = category.toLowerCase();
-    if (cat.contains('dance')) return 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad';
-    if (cat.contains('music') || cat.contains('singing')) return 'https://images.unsplash.com/photo-1516280440502-6c39f0ed26f7';
-    if (cat.contains('drama') || cat.contains('theatre')) return 'https://images.unsplash.com/photo-1507676184212-d0330a15183e';
-    if (cat.contains('sport') || cat.contains('football')) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
-    return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
-  }
+  // String _getPlaceholderImage(String category) {
+  //   String cat = category.toLowerCase();
+  //   if (cat.contains('dance')) return 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad';
+  //   if (cat.contains('music') || cat.contains('singing')) return 'https://images.unsplash.com/photo-1516280440502-6c39f0ed26f7';
+  //   if (cat.contains('drama') || cat.contains('theatre')) return 'https://images.unsplash.com/photo-1507676184212-d0330a15183e';
+  //   if (cat.contains('sport') || cat.contains('football')) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
+  //   return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
+  // }
 }

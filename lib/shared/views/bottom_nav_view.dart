@@ -1,5 +1,6 @@
 import 'package:fest_app/shared/views/event_view.dart';
 import 'package:fest_app/shared/views/sports_event_view.dart';
+import 'package:fest_app/shared/views/timeline.dart' hide AppColors;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../config/app_sizes.dart';
@@ -19,7 +20,7 @@ class BottomNavView extends StatelessWidget {
      HomeView(),// Replace with HomeView
       const CulturalEventView(), // Cultural Events
        SportsEventView(), // Sports Events (You can pass a parameter to filter if your EventView supports it)
-       Center(child: Text("Coming soon for you")),
+      TimelineScreen(), // Replace with TimelineView 
     ];
 
     return Scaffold(
@@ -74,7 +75,7 @@ class BottomNavView extends StatelessWidget {
                 _navItem(Icons.home_rounded, 'HOME', 0),
                 _navItem(Icons.theater_comedy_outlined, 'CULTURAL', 1),
                 _navItem(Icons.sports_soccer_rounded, 'SPORTS', 2),
-                _navItem(Icons.person_outline_rounded, 'PROFILE', 3),
+                _navItem(Icons.timeline, 'TIMELINE', 3),
               ],
             ),
           ),
