@@ -18,81 +18,83 @@ class AllAnnouncementsView extends StatelessWidget {
         title: 'All Announcements',
         showBackButton: true,
       ),
-      body: Obx(() {
-        // Show loading indicator
-        if (controller.isAnnouncementsLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        // Show Empty State
-        if (controller.announcements.isEmpty) {
-          return const Center(
-            child: Text("No new announcements right now.", style: TextStyle(color: Colors.grey)),
-          );
-        }
-
-        return ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
-          itemCount: controller.announcements.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
-          itemBuilder: (context, index) {
-            var ann = controller.announcements[index];
-            bool isNew = ann["isNew"] == "true";
-
-            return Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isNew ? Colors.blue[100]! : Colors.grey[200]!),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          ann["title"] ?? "Update",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
-                        ),
-                      ),
-                      if (isNew)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(color: Colors.red[50], borderRadius: BorderRadius.circular(12)),
-                          child: const Text("NEW", style: TextStyle(color: Colors.red, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    ann["body"] ?? "",
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 14, color: Colors.blue[400]),
-                      const SizedBox(width: 6),
-                      Text(
-                        ann["time"] ?? "",
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blue[400]),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      body: SafeArea(
+        child: Obx(() {
+          // Show loading indicator
+          if (controller.isAnnouncementsLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+        
+          // Show Empty State
+          if (controller.announcements.isEmpty) {
+            return const Center(
+              child: Text("No new announcements right now.", style: TextStyle(color: Colors.grey)),
             );
-          },
-        );
-      }),
+          }
+        
+          return ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            itemCount: controller.announcements.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              var ann = controller.announcements[index];
+              bool isNew = ann["isNew"] == "true";
+        
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: isNew ? Colors.blue[100]! : Colors.grey[200]!),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            ann["title"] ?? "Update",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                          ),
+                        ),
+                        if (isNew)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(color: Colors.red[50], borderRadius: BorderRadius.circular(12)),
+                            child: const Text("NEW", style: TextStyle(color: Colors.red, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      ann["body"] ?? "",
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, size: 14, color: Colors.blue[400]),
+                        const SizedBox(width: 6),
+                        Text(
+                          ann["time"] ?? "",
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blue[400]),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

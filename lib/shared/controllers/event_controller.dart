@@ -15,6 +15,9 @@ class EventController extends GetxController {
   var selectedLocation = 'All'.obs;
   var selectedCategory = 'All Events'.obs;
 
+  final RxString searchQuery = ''.obs;
+  final RxBool showOnlyWithRegistration = false.obs;
+
   final Dio _dio = Dio();
 
   @override

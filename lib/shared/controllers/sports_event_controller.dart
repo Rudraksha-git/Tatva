@@ -10,6 +10,10 @@ class SportsEventController extends GetxController {
   // Stores the raw list of all sports events
   var allEvents = <SportsEventModel>[].obs;
 
+  final RxString searchQuery = ''.obs;
+  final RxBool showOnlyWithRegistration = false.obs;
+
+
   // Active Filters
   var selectedLocation = 'All'.obs;
   var selectedSport = 'All Sports'.obs;

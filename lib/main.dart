@@ -14,7 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print("Handling a background message: ${message.messageId}");
+ // print("Handling a background message: ${message.messageId}");
 }
 
 void main() async {

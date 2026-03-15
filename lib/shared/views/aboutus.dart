@@ -69,28 +69,29 @@ final List<TeamCategory> patnaCommittees = [
     TeamMember(name: "Shivang", role: "Co-coordinator", phone: "7007154261", email: "shivangs.ug23.ce@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Decoration", members: [
-    TeamMember(name: "Sai Karthik", role: "Coordinator"),
-    TeamMember(name: "Boda Karthik", role: "Coordinator"),
-    TeamMember(name: "Samriddh", role: "Co-coordinator"),
+    TeamMember(name: "Sai Karthik", role: "Coordinator", phone: "9542379013"),
+    TeamMember(name: "Boda Karthik", role: "Coordinator", phone: "9618190859"),
+    TeamMember(name: "Samriddhi", role: "Co-coordinator", phone: "8287224470"),
   ]),
   TeamCategory(teamName: "Design", members: [
     TeamMember(name: "Subhadeep", role: "Coordinator", phone: "7047963335", email: "subhadeepd.ug23.ar@nitp.ac.in"),
-    TeamMember(name: "Abhisth Vitan Ambasth", role: "Co-coordinator", phone: "9973555357", email: "Abhistha.ug24.ar@nitp.ac.in"),
+    TeamMember(name: "Abhisth Vitan Ambasth", role: "Co-coordinator", phone: "9973555357", email: "abhistha.ug24.ar@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Media & PR", members: [
-    TeamMember(name: "Sidram", role: "Coordinator", phone: "9353029255", email: "Sidramd.ug23.ar@nitp.ac.in"),
-    TeamMember(name: "Suhani", role: "Coordinator", phone: "7292015147", email: "Suhani.ug23.ar@nitp.ac.in"),
+    TeamMember(name: "Sidram", role: "Coordinator", phone: "9353029255", email: "sidramd.ug23.ar@nitp.ac.in"),
+    TeamMember(name: "Suhani", role: "Coordinator", phone: "7292015147", email: "suhani.ug23.ar@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Stage Management", members: [
     TeamMember(name: "Shanvi Dixit", role: "Coordinator", phone: "8810904010", email: "shanvid.ug23.ch@nitp.ac.in"),
+    TeamMember(name: "Sanchita Jha", role: "Co-coordinator", phone: "8864014422"),
   ]),
 ];
 
 final List<TeamCategory> patnaEventLeads = [
   TeamCategory(teamName: "Raaga", members: [
     TeamMember(name: "Vinayak Thakur", role: "Coordinator", phone: "6299099156", email: "vinayakk.ug23.ee@nitp.ac.in"),
-    TeamMember(name: "Yash Kashyap", role: "Co-coordinator"),
-    TeamMember(name: "Yogaja Aasti", role: "Co-coordinator"),
+    TeamMember(name: "Yash Kashyap", role: "Co-coordinator", phone: "8935923228"),
+    TeamMember(name: "Yogaja Aasti", role: "Co-coordinator", phone: "7633974250"),
   ]),
   TeamCategory(teamName: "Nrityangna", members: [
     TeamMember(name: "Aditi Verma", role: "Coordinator", phone: "7318552617", email: "aditiv.ug23.me@nitp.ac.in"),
@@ -103,21 +104,21 @@ final List<TeamCategory> patnaEventLeads = [
   ]),
   TeamCategory(teamName: "Avlokan", members: [
     TeamMember(name: "Aparna", role: "Coordinator", phone: "9234758623", email: "aparnas.ug23.ar@nitp.ac.in"),
-    TeamMember(name: "Bhavyanshi", role: "Co-coordinator"),
+    TeamMember(name: "Bhavyanshi", role: "Co-coordinator", phone: "9829094848"),
     TeamMember(name: "Deepali", role: "Co-coordinator", phone: "7428485611", email: "deepalim.ug24.me@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Sanhita", members: [
-    TeamMember(name: "Rishav", role: "Coordinator"),
+    TeamMember(name: "Rishav", role: "Coordinator", phone: "7808108775"),
     TeamMember(name: "Satyam", role: "Co-coordinator", phone: "7765976599", email: "satyamk.ug24.ce@nitp.ac.in"),
     TeamMember(name: "Nitin", role: "Co-coordinator", phone: "9555631830", email: "nitint.ug24.me@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Abhinay", members: [
-    TeamMember(name: "Aditya Raj", role: "Coordinator"),
-    TeamMember(name: "Manvi", role: "Co-coordinator"),
+    TeamMember(name: "Aditya Raj", role: "Coordinator", phone: "8092189424"),
+    TeamMember(name: "Manvi", role: "Co-coordinator", phone: "7023828264"),
   ]),
   TeamCategory(teamName: "Vistaakari", members: [
     TeamMember(name: "Niranjan", role: "Coordinator", phone: "9188394053", email: "niranjans.ug23.ar@nitp.ac.in"),
-    TeamMember(name: "Abhay", role: "Co-coordinator"),
+    TeamMember(name: "Abhay", role: "Co-coordinator", phone: "6201763933"),
   ]),
   TeamCategory(teamName: "Graphika", members: [
     TeamMember(name: "Bhanu Priya", role: "Coordinator", phone: "8235976798", email: "bhanup.ug23.ce@nitp.ac.in"),
@@ -133,7 +134,7 @@ final List<TeamCategory> patnaEventLeads = [
   ]),
   TeamCategory(teamName: "Indoor Sports", members: [
     TeamMember(name: "Daksh", role: "Coordinator", phone: "7737376294", email: "daksha.ug23.ce@nitp.ac.in"),
-    TeamMember(name: "Archi", role: "Co-coordinator"),
+    TeamMember(name: "Archi", role: "Co-coordinator", phone: "6205240040"),
   ]),
 ];
 
@@ -142,87 +143,86 @@ final List<TeamCategory> patnaEventLeads = [
 // ==========================================
 final List<TeamCategory> bihtaCoreTeam = [
   TeamCategory(teamName: "General Management", members: [
-    TeamMember(name: "Anshuman Padhi", role: "Coordinator"),
-    TeamMember(name: "Aakash Tiwari", role: "Coordinator"),
-    TeamMember(name: "Rahul Chaudhary", role: "Co-coordinator"),
-    TeamMember(name: "Vikrant Prasad Singh", role: "Co-coordinator"),
+    TeamMember(name: "Anshuman Padhi", role: "Coordinator", phone: "9444314703", email: "anshumanp.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Aakash Tiwari", role: "Coordinator", phone: "7903490789", email: "aakasht.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Rahul Chaudhary", role: "Co-coordinator", phone: "9044344565", email: "rahulc.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Vikrant Prasad Singh", role: "Co-coordinator", phone: "9336683006", email: "vikrants.ug23.ec@nitp.ac.in"),
   ]),
 ];
 
 final List<TeamCategory> bihtaCommittees = [
   TeamCategory(teamName: "Sponsorship Leads", members: [
-    TeamMember(name: "Rachita Raman", role: "Coordinator"),
-    TeamMember(name: "Akanksha Nigam", role: "Co-coordinator"),
+    TeamMember(name: "Rachita Raman", role: "Coordinator", phone: "9321308542", email: "rachitar.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Akanksha Nigam", role: "Co-coordinator", phone: "9258323092", email: "akankshan.ug23.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Decoration", members: [
-    TeamMember(name: "Saim Javed", role: "Coordinator"),
-    TeamMember(name: "Adarsh Kumar Dubey", role: "Co-coordinator"),
+    TeamMember(name: "Saim Javed", role: "Coordinator", phone: "8235849155", email: "saimj.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Adarsh Kumar Dubey", role: "Co-coordinator", phone: "9709721788", email: "adarshd.ug23.ec@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Design", members: [
-    TeamMember(name: "Muskaan", role: "Coordinator"),
-    TeamMember(name: "Shreya", role: "Co-coordinator"),
+    TeamMember(name: "Muskaan", role: "Coordinator", phone: "8709179054", email: "muskaan.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Shreya", role: "Co-coordinator", phone: "9304722598", email: "shreya.ug24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Media & PR", members: [
-    TeamMember(name: "Jadhav Mohith", role: "Coordinator"),
-    TeamMember(name: "Siddharth Kumar", role: "Co-coordinator"),
+    TeamMember(name: "Jadhav Mohith", role: "Coordinator", phone: "8328112458", email: "jadhavm.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Siddharth Kumar", role: "Co-coordinator", phone: "9031446280", email: "siddharthk.ug24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Stage Management", members: [
-    TeamMember(name: "Harsh Kumar", role: "Coordinator"),
-    TeamMember(name: "Shreya Pandey", role: "Co-coordinator"),
-    TeamMember(name: "Ashish Anand", role: "Co-coordinator"),
+    TeamMember(name: "Harsh Kumar", role: "Coordinator", phone: "8409719691", email: "harshk.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Shreya Pandey", role: "Co-coordinator", phone: "7233002984", email: "shreyap.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Ashish Anand", role: "Co-coordinator", phone: "8051403975", email: "ashisha.ug23.ec@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Discipline", members: [
-    TeamMember(name: "Nitish Rai", role: "Coordinator"),
-    TeamMember(name: "Shreya Pandey", role: "Coordinator"),
-    TeamMember(name: "Ratnesh Anand", role: "Co-coordinator"),
+    TeamMember(name: "Nitish Rai", role: "Coordinator", phone: "7237908001", email: "nitishr.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Shreya Pandey", role: "Coordinator", phone: "7233002984", email: "shreyap.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Ratnesh Anand", role: "Co-coordinator", phone: "8409927332", email: "ratnesha.ug23.cs@nitp.ac.in"),
     TeamMember(name: "Madhuram", role: "Co-coordinator"),
   ]),
 ];
 
 final List<TeamCategory> bihtaEventLeads = [
   TeamCategory(teamName: "Raaga", members: [
-    TeamMember(name: "Sarthak Rajan", role: "Coordinator"),
-    TeamMember(name: "Yaksh Bariya", role: "Co-coordinator"),
+    TeamMember(name: "Sarthak Rajan", role: "Coordinator", phone: "8354819414", email: "sarthakr.ug24.ec@nitp.ac.in"),
+    TeamMember(name: "Yaksh Bariya", role: "Co-coordinator", phone: "9662435662", email: "yakshb.ug24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Nrityangna", members: [
-    TeamMember(name: "Talachintala Yashwanth", role: "Coordinator"),
-    TeamMember(name: "Sai Koushik", role: "Co-coordinator"),
+    TeamMember(name: "Talachintala Yashwanth", role: "Coordinator", phone: "9347803531", email: "talachintalay.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Sai Koushik", role: "Co-coordinator", phone: "7780154569", email: "puppalak.ug23.ec@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Kalakriti", members: [
-    TeamMember(name: "Anurag Mishra", role: "Coordinator"),
-    TeamMember(name: "Khushbu Kumari", role: "Co-coordinator"),
+    TeamMember(name: "Anurag Mishra", role: "Coordinator", phone: "7061633407", email: "anuragm.ug24.cs@nitp.ac.in"),
+    TeamMember(name: "Khushbu Kumari", role: "Co-coordinator", phone: "8100918754", email: "khushbuk.ug24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Treasure Hunt", members: [
-    TeamMember(name: "Harshit Verma", role: "Coordinator"),
-    TeamMember(name: "Shivam Kumar", role: "Co-coordinator"),
+    TeamMember(name: "Harshit Verma", role: "Coordinator", phone: "9838491852", email: "harshitv.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Shivam Kumar", role: "Co-coordinator", phone: "7667349750", email: "shivamk.dd24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Abhinay", members: [
-    TeamMember(name: "Anurag Kumar", role: "Coordinator"),
-    TeamMember(name: "Tanya Bharti", role: "Co-coordinator"),
+    TeamMember(name: "Anurag Kumar", role: "Coordinator", phone: "6203562428", email: "anuragk.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Tanya Bharti", role: "Co-coordinator", phone: "9835097452", email: "tanyab.ug24.ec@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Vistaakari", members: [
-    TeamMember(name: "Ayush Kumar", role: "Coordinator"),
-    TeamMember(name: "Vasu Choudhari", role: "Co-coordinator"),
+    TeamMember(name: "Ayush Kumar", role: "Coordinator", phone: "8271154570", email: "ayushkr1.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Vasu Choudhari", role: "Co-coordinator", phone: "8600550839", email: "vasuc.ug23.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Graphika", members: [
-    TeamMember(name: "Nishant Kumar", role: "Coordinator"),
-    TeamMember(name: "Shourya Kumar", role: "Co-coordinator"),
-    TeamMember(name: "Shubham Sinha", role: "Co-coordinator"),
+    TeamMember(name: "Nishant Kumar", role: "Coordinator", phone: "8866200955", email: "nishantk.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Shourya Kumar", role: "Co-coordinator", phone: "7903385887", email: "kumarssh.ug24.cs@nitp.ac.in"),
+    TeamMember(name: "Shubham Sinha", role: "Co-coordinator", phone: "8789806191", email: "shubhams.dd24.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Pratibimb", members: [
-    TeamMember(name: "Palak Jaiswal", role: "Coordinator"),
-    TeamMember(name: "Nandani Awase", role: "Co-coordinator"),
+    TeamMember(name: "Palak Jaiswal", role: "Coordinator", phone: "9450081431", email: "palakj.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Nandani Awase", role: "Co-coordinator", phone: "6260248296", email: "nandania.ug23.cs@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Outdoor Sports", members: [
-    TeamMember(name: "Aniket Jha", role: "Coordinator"),
-    TeamMember(name: "Nikhil Kumar", role: "Co-coordinator"),
+    TeamMember(name: "Aniket Jha", role: "Coordinator", phone: "9430045319", email: "aniketj.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Nikhil Kumar", role: "Co-coordinator", phone: "8603324409", email: "nikhilk.ug23.ec@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Indoor Sports", members: [
-    TeamMember(name: "I. Chenchusasikanth Reddy", role: "Coordinator"),
-    TeamMember(name: "Sai Keerthana Dulam", role: "Co-coordinator"),
+    TeamMember(name: "I. Chenchusasikanth Reddy", role: "Coordinator", phone: "9391529328", email: "ilupurur.ug23.cs@nitp.ac.in"),
+    TeamMember(name: "Sai Keerthana Dulam", role: "Co-coordinator", phone: "9063932155", email: "dulamk.ug23.cs@nitp.ac.in"),
   ]),
 ];
-
 // ==========================================
 // MAIN UI WIDGET
 // ==========================================
@@ -282,7 +282,7 @@ class _AboutUsViewState extends State<AboutUsView> {
                         dividerColor: Colors.transparent,
                         indicatorColor: Colors.transparent,
                       ),
-                    ),
+                     ),
                     child: TabBar(
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicator: BoxDecoration(
@@ -307,12 +307,14 @@ class _AboutUsViewState extends State<AboutUsView> {
             ),
           ),
         ),
-        body: TabBarView(
-          children: [
-            _buildTeamList(activeCoreTeam),
-            _buildTeamList(activeCommittees),
-            _buildTeamList(activeEventLeads),
-          ],
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              _buildTeamList(activeCoreTeam),
+              _buildTeamList(activeCommittees),
+              _buildTeamList(activeEventLeads),
+            ],
+          ),
         ),
       ),
     );
@@ -370,15 +372,32 @@ class _AboutUsViewState extends State<AboutUsView> {
     );
   }
 
-  // --- Team List Builder ---
+  // --- Team List Builder (Uses CustomScrollView to anchor footer) ---
   Widget _buildTeamList(List<TeamCategory> categories) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    return CustomScrollView(
       physics: const BouncingScrollPhysics(),
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        return _buildTeamCard(categories[index]);
-      },
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                return _buildTeamCard(categories[index]);
+              },
+              childCount: categories.length,
+            ),
+          ),
+        ),
+        // This widget pushes the footer to the bottom of the screen
+        // if the list content is small, but acts normally if the list is long.
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildHackSlashFooter(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -429,9 +448,14 @@ class _AboutUsViewState extends State<AboutUsView> {
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: category.members.length,
-            // separatorBuilder: (context, index) => const Divider(height: 1, color: AppColors.slate200, indent: 16, endIndent: 16),
             itemBuilder: (context, index) {
-              return _buildMemberRow(category.members[index]);
+              return Column(
+                children: [
+                  _buildMemberRow(category.members[index]),
+                  if (index < category.members.length - 1)
+                    const Divider(height: 1, color: AppColors.slate200, indent: 16, endIndent: 16),
+                ],
+              );
             },
           ),
         ],
@@ -515,6 +539,50 @@ class _AboutUsViewState extends State<AboutUsView> {
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 18, color: color),
+      ),
+    );
+  }
+
+  // --- HackSlash Footer ---
+  Widget _buildHackSlashFooter() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "Designed & Developed by",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.slate400,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Image.asset(
+              //   'assets/image/img_1.png',
+              //   height: 28,
+              //   errorBuilder: (context, error, stackTrace) {
+              //     return const SizedBox.shrink();
+              //   },
+              // ),
+              const SizedBox(width: 8),
+              const Text(
+                "HackSlash Developers Club",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xff00132b),
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

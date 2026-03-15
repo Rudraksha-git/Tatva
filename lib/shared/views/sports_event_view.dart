@@ -43,6 +43,9 @@ class SportsEventView extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // 0. Search Bar and Filter Toggle
+          
+
           // 1. Location Toggle Switch
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -55,52 +58,38 @@ class SportsEventView extends StatelessWidget {
               child: Obx(() {
                 String currentLocation = controller.selectedLocation.value;
                 return Row(
-                  children:
-                      ['All', 'Bihta', 'Patna'].map((loc) {
-                        bool isSelected = currentLocation == loc;
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () => controller.setLocation(loc),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? Colors.green[600]
-                                        : Colors
-                                            .transparent, // Green tint for sports
-                                borderRadius: BorderRadius.circular(22),
-                                boxShadow:
-                                    isSelected
-                                        ? [
-                                          BoxShadow(
-                                            color: Colors.green.withOpacity(
-                                              0.3,
-                                            ),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ]
-                                        : [],
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                loc,
-                                style: TextStyle(
-                                  color:
-                                      isSelected
-                                          ? Colors.white
-                                          : Colors.grey[600],
-                                  fontWeight:
-                                      isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
+                  children: ['All', 'Bihta', 'Patna'].map((loc) {
+                    bool isSelected = currentLocation == loc;
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () => controller.setLocation(loc),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.green[600] : Colors.transparent,
+                            borderRadius: BorderRadius.circular(22),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.green.withOpacity(0.3),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]
+                                : [],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            loc,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.grey[600],
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                              fontSize: 14,
                             ),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 );
               }),
             ),
@@ -129,10 +118,7 @@ class SportsEventView extends StatelessWidget {
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color:
-                                isSelected
-                                    ? Colors.deepOrange
-                                    : Colors.transparent,
+                            color: isSelected ? Colors.deepOrange : Colors.transparent,
                             width: 3,
                           ),
                         ),
@@ -141,10 +127,8 @@ class SportsEventView extends StatelessWidget {
                       child: Text(
                         tab,
                         style: TextStyle(
-                          color:
-                              isSelected ? Colors.deepOrange : Colors.grey[500],
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w600,
+                          color: isSelected ? Colors.deepOrange : Colors.grey[500],
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                           fontSize: 14,
                         ),
                       ),
@@ -154,6 +138,49 @@ class SportsEventView extends StatelessWidget {
               );
             }),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Row(
+              children: [
+                // Search Bar - Removed Obx wrapper here
+                Expanded(
+                  child: TextField(
+                    onChanged: (val) => controller.searchQuery.value = val,
+                    decoration: InputDecoration(
+                      hintText: 'Search events...',
+                      prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(22),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Filter Toggle
+                Obx(() => Row(
+                      children: [
+                        Switch(
+                          value: controller.showOnlyWithRegistration.value,
+                          onChanged: (val) => controller.showOnlyWithRegistration.value = val,
+                          activeColor: Colors.green,
+                        ),
+                        Text(
+                          'Reg Open',
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
 
           // 3. Filtered Events List
           Expanded(
@@ -161,7 +188,24 @@ class SportsEventView extends StatelessWidget {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (controller.filteredEvents.isEmpty) {
+
+              // Compose filtered list based on search and toggle
+              final filtered = controller.filteredEvents.where((event) {
+                // Filter by registrationUrl if toggle is on
+                if (controller.showOnlyWithRegistration.value &&
+                    (event.registrationUrl == null || event.registrationUrl!.isEmpty)) {
+                  return false;
+                }
+                // Filter by search query
+                final query = controller.searchQuery.value.trim().toLowerCase();
+                if (query.isEmpty) return true;
+                final name = (event.sport ?? '').toLowerCase();
+                final desc = (event.description ?? '').toLowerCase();
+                final venue = (event.venue ?? '').toLowerCase();
+                return name.contains(query) || desc.contains(query) || venue.contains(query);
+              }).toList();
+
+              if (filtered.isEmpty) {
                 return Center(
                   child: Text(
                     "No sports match your filters.",
@@ -172,12 +216,12 @@ class SportsEventView extends StatelessWidget {
 
               return ListView.separated(
                 padding: const EdgeInsets.all(20),
-                itemCount: controller.filteredEvents.length,
+                itemCount: filtered.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 24),
                 itemBuilder: (context, index) {
-                  var event = controller.filteredEvents[index];
+                  var event = filtered[index];
 
-                  // Construct date string (e.g., "Mar 18 - Apr 03")
+                  // Construct date string
                   String dateString = 'TBA';
                   if (event.startDate != null && event.endDate != null) {
                     dateString =
@@ -196,7 +240,7 @@ class SportsEventView extends StatelessWidget {
                     registrationUrl: event.registrationUrl,
                     imageUrl: event.posterUrl.toString(),
                     onRegister: () {
-                      if(event.registrationUrl == null) {
+                      if (event.registrationUrl == null) {
                         Get.snackbar(
                           "Registration URL Missing",
                           "Sorry, the registration link for this event is currently unavailable.",
@@ -225,26 +269,14 @@ class SportsEventView extends StatelessWidget {
         ],
       ),
     );
-
-    
   }
 
   String _formatDate(String rawDate) {
     try {
       DateTime dt = DateTime.parse(rawDate);
       List<String> months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
       ];
       return "${months[dt.month - 1]} ${dt.day}";
     } catch (e) {
@@ -253,34 +285,26 @@ class SportsEventView extends StatelessWidget {
   }
 
   String _getSportPlaceholder(String? sport) {
-    if (sport == null)
-      return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
+    if (sport == null) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
     String s = sport.toLowerCase();
 
-    if (s.contains('volleyball'))
-      return 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1';
-    if (s.contains('basketball'))
-      return 'https://images.unsplash.com/photo-1546519638-68e109498ffc';
-    if (s.contains('cricket'))
-      return 'https://images.unsplash.com/photo-1531415074968-036ba1b575da';
-    if (s.contains('football'))
-      return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55';
-    if (s.contains('chess'))
-      return 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b';
-    if (s.contains('badminton'))
-      return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea';
-    if (s.contains('esport') || s.contains('gaming'))
-      return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
-    if (s.contains('power') || s.contains('weight'))
-      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
+    if (s.contains('volleyball')) return 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1';
+    if (s.contains('basketball')) return 'https://images.unsplash.com/photo-1546519638-68e109498ffc';
+    if (s.contains('cricket')) return 'https://images.unsplash.com/photo-1531415074968-036ba1b575da';
+    if (s.contains('football')) return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55';
+    if (s.contains('chess')) return 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b';
+    if (s.contains('badminton')) return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea';
+    if (s.contains('esport') || s.contains('gaming')) return 'https://images.unsplash.com/photo-1542751371-adc38448a05e';
+    if (s.contains('power') || s.contains('weight')) return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
 
-    return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211'; // General sports
+    return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
   }
-     Future<void> _launchUrl(String uri) async {
-  final Uri _url = Uri.parse(uri);
-  if (!await launchUrl(_url)) {
-    throw Exception('Could not launch $_url');
-  }
+
+  Future<void> _launchUrl(String uri) async {
+    final Uri url = Uri.parse(uri);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 }
 
@@ -311,17 +335,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: true,
-      leading:
-          showBackButton
-              ? IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: iconColor,
-                  size: AppSizes.x20,
-                ),
-                onPressed: () => Get.back(),
-              )
-              : null,
+      leading: showBackButton
+          ? IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: iconColor,
+                size: AppSizes.x20,
+              ),
+              onPressed: () => Get.back(),
+            )
+          : null,
       title: Text(
         title,
         style: theme.textTheme.titleLarge?.copyWith(
@@ -358,15 +381,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   child: Center(
                     child: Text(
-                      notificationCount > 99
-                          ? '99+'
-                          : notificationCount.toString(),
+                      notificationCount > 99 ? '99+' : notificationCount.toString(),
                       style: const TextStyle(
                         color: AppColors.white,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        height:
-                            1, // Centers the text nicely without extra padding
+                        height: 1,
                       ),
                       textAlign: TextAlign.center,
                     ),

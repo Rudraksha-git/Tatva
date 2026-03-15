@@ -451,7 +451,7 @@ class HomeView extends StatelessWidget {
           // Director's Message
           _buildLightMessageCard(
             title: "Message from the Director's Desk",
-            subtitle: "Dr. P.K. Jain, Director, NIT Patna",
+            subtitle: "Prof. P. K. Jain, Director, NIT Patna",
             message: "At our institute, we believe that true education extends beyond classrooms. Cultural, sports, and literary activities play a vital role in shaping confident, creative, and responsible individuals. The Student Activity Centre app is a step towards encouraging students to explore their talents, participate actively, and grow through diverse learning experiences.",
             imagePath: "assets/images/PKJDESKTOP.jpeg",
           ),
@@ -461,7 +461,7 @@ class HomeView extends StatelessWidget {
           // Fest President Message
           _buildLightMessageCard(
             title: "Message from Fest President",
-            subtitle: "Dr. Prabhat Kumar, Dean Student Welfare, NIT Patna",
+            subtitle: "Prof. (Dr.) Prabhat Kumar, Dean Student Welfare, NIT Patna",
             message: "It gives me great pleasure to see the Student Activity Centre App becoming an integral part of our fest. The app has enabled seamless event updates and registrations, making participation easier for everyone. It reflects our commitment to creating an organized, engaging, and vibrant platform for students to celebrate talent and teamwork.",
             imagePath: "assets/images/PRHSWD.jpeg",
           ),
