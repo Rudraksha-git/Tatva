@@ -127,27 +127,27 @@ Future<void> _setupFCM() async {
               },
             ),
         
-            // 2. Outer Spinning Ring (Cyan - matches HackSlash logo)
-            AnimatedBuilder(
-              animation: _spinController,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _spinController.value * 2.0 * math.pi,
-                  child: _buildOrbitalRing(size: 340, color: const Color(0xFF00FFA3).withOpacity(0.2), strokeWidth: 1.5, isDashed: true),
-                );
-              },
-            ),
+            // // 2. Outer Spinning Ring (Cyan - matches HackSlash logo)
+            // AnimatedBuilder(
+            //   animation: _spinController,
+            //   builder: (context, child) {
+            //     return Transform.rotate(
+            //       angle: _spinController.value * 2.0 * math.pi,
+            //       child: _buildOrbitalRing(size: 340, color: const Color(0xFF00FFA3).withOpacity(0.2), strokeWidth: 1.5, isDashed: true),
+            //     );
+            //   },
+            // ),
         
-            // 3. Inner Spinning Ring (Orange - matches TATVA logo)
-            AnimatedBuilder(
-              animation: _spinController,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: -(_spinController.value * 3.0 * math.pi),
-                  child: _buildOrbitalRing(size: 260, color: const Color(0xFFFF5722).withOpacity(0.4), strokeWidth: 1),
-                );
-              },
-            ),
+            // // 3. Inner Spinning Ring (Orange - matches TATVA logo)
+            // AnimatedBuilder(
+            //   animation: _spinController,
+            //   builder: (context, child) {
+            //     return Transform.rotate(
+            //       angle: -(_spinController.value * 3.0 * math.pi),
+            //       child: _buildOrbitalRing(size: 260, color: const Color(0xFFFF5722).withOpacity(0.4), strokeWidth: 1),
+            //     );
+            //   },
+            // ),
         
             // 4. Center: Main TATVA Logo & Tagline
             FadeTransition(
@@ -165,27 +165,27 @@ Future<void> _setupFCM() async {
                     ),
                     const SizedBox(height: 24),
         
-                    // Futuristic Theme Subtitle
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFFF5722).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: const Color(0xFFFF5722).withOpacity(0.3)),
-                          boxShadow: [
-                            BoxShadow(color: const Color(0xFFFF5722).withOpacity(0.2), blurRadius: 10)
-                          ]
-                      ),
-                      child: const Text(
-                        "MIRROR OF THE COSMOS",
-                        style: TextStyle(
-                          color: Color(0xFFFFCC80),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 4.0,
-                        ),
-                      ),
-                    ),
+                    // // Futuristic Theme Subtitle
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    //   decoration: BoxDecoration(
+                    //       color: const Color(0xFFFF5722).withOpacity(0.1),
+                    //       borderRadius: BorderRadius.circular(20),
+                    //       border: Border.all(color: const Color(0xFFFF5722).withOpacity(0.3)),
+                    //       boxShadow: [
+                    //         BoxShadow(color: const Color(0xFFFF5722).withOpacity(0.2), blurRadius: 10)
+                    //       ]
+                    //   ),
+                    //   child: const Text(
+                    //     "MIRROR OF THE COSMOS",
+                    //     style: TextStyle(
+                    //       color: Color(0xFFFFCC80),
+                    //       fontSize: 12,
+                    //       fontWeight: FontWeight.w800,
+                    //       letterSpacing: 4.0,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

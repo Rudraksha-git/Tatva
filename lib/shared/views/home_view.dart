@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:fest_app/shared/controllers/bottom_nav_controller.dart';
+import 'package:fest_app/shared/views/aboutus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../config/app_sizes.dart';
 import '../controllers/home_controller.dart';
 import 'all_anouncement._view.dart' hide CustomAppBar;
-import 'event_detail_view.dart';
 
 // Import your other screens
 
@@ -60,6 +62,9 @@ class HomeView extends StatelessWidget {
             _buildAnnouncementsSection(controller),
 
                // 3. Messages from Leadership (Made more compact)
+
+            _buildRulebookButton(),
+
             _buildMessagesSection(),
 
             // 4. Student Coordinators Contact Section (Made more compact)
@@ -74,11 +79,123 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  // --- 1. HERO BANNER ---
+  // // --- 1. HERO BANNER ---
+  // Widget _buildHeroBanner(HomeController controller) {
+  //   return Container(
+  //     margin: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+  //     height: 280,
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(24),
+  //       image: const DecorationImage(
+  //         image: AssetImage('assets/tatvabg.jpeg'),
+  //         fit: BoxFit.cover,
+  //       ),
+  //       boxShadow: [
+  //         BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10))
+  //       ],
+  //     ),
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(24),
+  //         gradient: LinearGradient(
+  //           begin: Alignment.topCenter,
+  //           end: Alignment.bottomCenter,
+  //           colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+  //           stops: const [0.2, 1.0],
+  //         ),
+  //       ),
+  //       padding: const EdgeInsets.all(24),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.end,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           Container(
+  //             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+  //             decoration: BoxDecoration(
+  //                 color: const Color(0xFFFFCA28),
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 boxShadow: [
+  //                   BoxShadow(color: const Color(0xFFFFCA28).withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4))
+  //                 ]
+  //             ),
+  //             child: const Text(
+  //               "ANNUAL SPORTS & CULTURAL",
+  //               style: TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 20),
+
+  //           // Glassmorphic Panel
+  //           ClipRRect(
+  //             borderRadius: BorderRadius.circular(20),
+  //             child: BackdropFilter(
+  //               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+  //               child: Container(
+  //                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+  //                 width: double.infinity,
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white.withOpacity(0.1),
+  //                   borderRadius: BorderRadius.circular(20),
+  //                   border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+  //                 ),
+  //                 child: Obx(() {
+  //                   if (controller.isFestLive.value) {
+  //                     return const Column(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Text(
+  //                           "FEST IS LIVE!",
+  //                           style: TextStyle(
+  //                               color: Color(0xFFFFCA28),
+  //                               fontSize: 24,
+  //                               fontWeight: FontWeight.w900,
+  //                               letterSpacing: 2,
+  //                               shadows: [
+  //                                 BoxShadow(
+  //                                     color: Color(0xFFFFCA28), blurRadius: 15)
+  //                               ]),
+  //                         ),
+  //                         SizedBox(height: 8),
+  //                         Text(
+  //                           "16th March - 4th April",
+  //                           style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+  //                         ),
+  //                       ],
+  //                     );
+  //                   }
+  //                   return Column(
+  //                     children: [
+  //                       const Text("FEST BEGINS IN", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 3)),
+  //                       const SizedBox(height: 12),
+  //                       Obx(() => Row(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               _buildTimeBox(controller.days.value, "DAYS"),
+  //                               const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+  //                               _buildTimeBox(controller.hours.value, "HRS"),
+  //                               const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+  //                               _buildTimeBox(controller.minutes.value, "MIN"),
+  //                               const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text(":", style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold))),
+  //                               _buildTimeBox(controller.seconds.value, "SEC", isAccent: true),
+  //                             ],
+  //                           )),
+  //                     ],
+  //                   );
+  //                 }),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+// --- 1. HERO BANNER ---
   Widget _buildHeroBanner(HomeController controller) {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      height: 280,
+      height: 320,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         image: const DecorationImage(
@@ -104,20 +221,20 @@ class HomeView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              decoration: BoxDecoration(
-                  color: const Color(0xFFFFCA28),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(color: const Color(0xFFFFCA28).withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4))
-                  ]
-              ),
-              child: const Text(
-                "MIRROR OF THE COSMOS",
-                style: TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
-              ),
-            ),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            //   decoration: BoxDecoration(
+            //       color: const Color(0xFFFFCA28),
+            //       borderRadius: BorderRadius.circular(12),
+            //       boxShadow: [
+            //         BoxShadow(color: const Color(0xFFFFCA28).withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4))
+            //       ]
+            //   ),
+            //   child: const Text(
+            //     "ANNUAL CULTURAL & SPORTS FEST",
+            //     style: TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.5),
+            //   ),
+            // ),
             const SizedBox(height: 20),
 
             // Glassmorphic Panel
@@ -135,27 +252,70 @@ class HomeView extends StatelessWidget {
                   ),
                   child: Obx(() {
                     if (controller.isFestLive.value) {
-                      return const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "FEST IS LIVE!",
-                            style: TextStyle(
-                                color: Color(0xFFFFCA28),
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                                shadows: [
-                                  BoxShadow(
-                                      color: Color(0xFFFFCA28), blurRadius: 15)
-                                ]),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "16th March - 4th April",
-                            style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      // Removed 'const' from this Column
+                      return Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "FEST IS LIVE!",
+                              style: TextStyle(
+                                  color: Color(0xFFFFCA28),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2,
+                                  shadows: [
+                                    BoxShadow(
+                                        color: Color(0xFFFFCA28), blurRadius: 15)
+                                  ]),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              "16th March - 4th April",
+                              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 6),
+
+                            // --- ADDED: Live Events Button ---
+                            ElevatedButton(
+                              onPressed: () {
+                                // 1. Find your existing BottomNavController
+                                final bottomNavController = Get.find<BottomNavController>();
+                                bottomNavController.changeIndex(3);
+
+                                // 2. Tell it to switch to the Timeline tab.
+                                // Change '1' to whatever index your TimelineScreen is at in your bottom navigation!
+                                 // This will switch to the Timeline tab
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFFCA28),
+                                foregroundColor: Colors.black87,
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 8,
+                                shadowColor: const Color(0xFFFFCA28).withOpacity(0.5),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.calendar_month_rounded, size: 18),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Live Events",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // ----------------------------------
+                          ],
+                        ),
                       );
                     }
                     return Column(
@@ -185,6 +345,74 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
+
+  // --- 5. RULEBOOK BUTTON SECTION ---
+Widget _buildRulebookButton() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
+    child: InkWell(
+      // Replace with your actual rulebook Google Drive or Website link
+      onTap: () => _launchWebURL('https://drive.google.com/drive/folders/1CJ4cI8KokT7HoUDs_0ONfVTLnSD8ZmZu'),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey[200]!, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4)
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.purple[50], // A distinct color to make it stand out
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.menu_book_rounded, color: Colors.purple[700], size: 22),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Official Rulebook",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "Guidelines and event details",
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.open_in_new_rounded, size: 18, color: Colors.grey[400]),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+// Helper function to open web links
+Future<void> _launchWebURL(String urlString) async {
+  final Uri url = Uri.parse(urlString);
+  if (await canLaunchUrl(url)) {
+    // LaunchMode.externalApplication forces it to open in the default browser (Chrome/Safari)
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    debugPrint('Could not launch $urlString');
+  }
+}
 
   Widget _buildTimeBox(String value, String label, {bool isAccent = false}) {
     return Column(
@@ -233,7 +461,7 @@ class HomeView extends StatelessWidget {
   // --- 3. ANNOUNCEMENTS SECTION ---
   Widget _buildAnnouncementsSection(HomeController controller) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 32),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -693,4 +921,77 @@ class HomeView extends StatelessWidget {
   //   if (cat.contains('sport') || cat.contains('football')) return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211';
   //   return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
   // }
+}
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final bool showBackButton;
+  final int notificationCount;
+  final List<Widget>? extraActions;
+
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.showBackButton = false,
+    this.notificationCount = 0,
+    this.extraActions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final iconColor = isDark ? AppColors.white : AppColors.darkGrey;
+
+    return AppBar(
+      backgroundColor: isDark ? AppColors.darkGrey : AppColors.slate50,
+      elevation: 0,
+      leading:
+          showBackButton
+              ? IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: iconColor,
+                  size: AppSizes.x20,
+                ),
+                onPressed: () => Get.back(),
+              )
+              : null,
+      title: Row(
+        children: [
+         Image.asset(
+            'assets/images/tatva_logo.png',
+            height: 32,
+            width: 32,
+          ),
+          Text(
+            title,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: iconColor,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton.icon(
+          onPressed: () => Get.to(() => AboutUsView()),
+          icon: Icon(Icons.info_outline_rounded, color: iconColor, size: AppSizes.x24),
+          label: Text(
+            "About Us",
+            style: TextStyle(
+              color: iconColor,
+              fontWeight: FontWeight.w600,
+              fontSize: AppSizes.x14,
+            ),
+          ),
+        ),
+        AppSizes.gapW8,
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
 }

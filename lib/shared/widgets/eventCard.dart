@@ -9,17 +9,21 @@ class EventCard extends StatelessWidget {
   final String description;
   final String imageUrl;
   final String? registrationUrl;
+  final bool registrationOpen;
   final VoidCallback onRegister;
   final VoidCallback onCardTap;
+  final String? club;
 
   const EventCard({
     super.key,
     required this.eventName,
+     this.club,
     required this.category,
     required this.date,
     required this.time,
     required this.location,
     required this.description,
+    required this.registrationOpen,
     this.registrationUrl,
     required this.imageUrl,
     required this.onRegister,
@@ -121,7 +125,7 @@ class EventCard extends StatelessWidget {
                     width: double.infinity,
                     height: 44,
                     child: ElevatedButton(
-                      onPressed: registrationUrl!=null ? onRegister : null,
+                      onPressed: registrationUrl!=null && registrationOpen ? onRegister : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFCA28),
                         disabledBackgroundColor: Colors.grey[300],
@@ -129,7 +133,7 @@ class EventCard extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
                       ),
                       child: Text(
-                       registrationUrl!=null  ? 'Register Now' : 'Coming Soon',
+                      !registrationOpen ? 'Registration Closed / NA': registrationUrl!=null  ? 'Register Now' : 'Coming Soon',
                         style: TextStyle(color: registrationUrl!=null ? Colors.black87 : Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),

@@ -234,6 +234,7 @@ class SportsEventView extends StatelessWidget {
 
                   return SportsEventCard(
                     sportName: event.sport ?? 'Unknown Sport',
+                    registrationOpen: event.registrationOpen ?? false,
                     date: dateString,
                     location: event.venue ?? 'TBA',
                     description: event.description ?? '',

@@ -15,15 +15,6 @@ class CulturalEventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EventController controller = Get.put(EventController());
-    final List<String> categories = [
-      'All Events',
-      'Music',
-      'Dance',
-      'Drama',
-      'Fashion',
-      'Art',
-      'Photography',
-    ];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -38,9 +29,6 @@ class CulturalEventView extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // 0. Search Bar and Filter Toggle
-            
-
             // 1. Location Toggle Switch
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -64,12 +52,12 @@ class CulturalEventView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(22),
                               boxShadow: isSelected
                                   ? [
-                                      BoxShadow(
-                                        color: Colors.blue.withOpacity(0.3),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ]
+                                BoxShadow(
+                                  color: Colors.blue.withOpacity(0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
                                   : [],
                             ),
                             alignment: Alignment.center,
@@ -90,23 +78,26 @@ class CulturalEventView extends StatelessWidget {
               ),
             ),
 
-            // 2. Category Tab Bar
+            // 2. Club Tab Bar (DYNAMIC)
             Container(
               height: 45,
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
               ),
               child: Obx(() {
-                String currentCategory = controller.selectedCategory.value;
+                String currentClub = controller.selectedClub.value;
+                List<String> clubs = controller.dynamicClubs;
+
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: categories.length,
+                  itemCount: clubs.length,
                   itemBuilder: (context, index) {
-                    String cat = categories[index];
-                    bool isSelected = currentCategory == cat;
+                    String club = clubs[index];
+                    bool isSelected = currentClub == club;
+
                     return GestureDetector(
-                      onTap: () => controller.setCategory(cat),
+                      onTap: () => controller.setClub(club),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -120,7 +111,7 @@ class CulturalEventView extends StatelessWidget {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          cat,
+                          club,
                           style: TextStyle(
                             color: isSelected ? Colors.deepOrange : Colors.grey[500],
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
@@ -138,7 +129,7 @@ class CulturalEventView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
               child: Row(
                 children: [
-                  // Search Bar - Removed Obx wrapper here
+                  // Search Bar
                   Expanded(
                     child: TextField(
                       onChanged: (val) => controller.searchQuery.value = val,
@@ -158,22 +149,22 @@ class CulturalEventView extends StatelessWidget {
                   const SizedBox(width: 12),
                   // Filter Toggle
                   Obx(() => Row(
-                        children: [
-                          Switch(
-                            value: controller.showOnlyWithRegistration.value,
-                            onChanged: (val) => controller.showOnlyWithRegistration.value = val,
-                            activeColor: Colors.blue,
-                          ),
-                          Text(
-                            'Reg Open',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      )),
+                    children: [
+                      Switch(
+                        value: controller.showOnlyWithRegistration.value,
+                        onChanged: (val) => controller.showOnlyWithRegistration.value = val,
+                        activeColor: Colors.blue,
+                      ),
+                      Text(
+                        'Reg Open',
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  )),
                 ],
               ),
             ),
@@ -185,24 +176,21 @@ class CulturalEventView extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // Compose filtered list based on search and toggle
                 final filtered = controller.filteredEvents.where((event) {
-                  // Filter by registrationUrl if toggle is on
                   if (controller.showOnlyWithRegistration.value &&
                       (event.registrationUrl == null || event.registrationUrl!.isEmpty)) {
                     return false;
                   }
-                  // Filter by search query
                   final query = controller.searchQuery.value.trim().toLowerCase();
                   if (query.isEmpty) return true;
                   final name = (event.event ?? '').toLowerCase();
                   final desc = (event.description ?? '').toLowerCase();
                   final venue = (event.venue ?? '').toLowerCase();
-                  final cat = (event.category ?? '').toLowerCase();
+                  final clubName = (event.club ?? '').toLowerCase();
                   return name.contains(query) ||
                       desc.contains(query) ||
                       venue.contains(query) ||
-                      cat.contains(query);
+                      clubName.contains(query);
                 }).toList();
 
                 if (filtered.isEmpty) {
@@ -221,30 +209,31 @@ class CulturalEventView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     var event = filtered[index];
                     String displayDate =
-                        event.startDate != null ? _formatDate(event.startDate!) : 'TBA';
+                    event.startDate != null ? _formatDate(event.startDate!) : 'TBA';
                     String displayTime = event.schedule?.time ?? event.schedule?.prelims ?? 'TBA';
-                    String imgUrl = event.posterUrl ?? _getPlaceholderImage(event.category);
+                    String imgUrl = event.posterUrl ?? _getPlaceholderImage(event.club);
 
                     return EventCard(
                       eventName: event.event ?? 'Unknown Event',
-                      category: event.category ?? 'Uncategorized',
+                      club: event.club ?? 'No Club',
                       date: displayDate,
                       time: displayTime,
                       location: event.venue ?? 'TBA',
                       description: event.description ?? '',
                       registrationUrl: event.registrationUrl,
+                      registrationOpen: event.registrationOpen ?? false,
                       imageUrl: imgUrl,
                       onRegister: () => _handleRegistration(event.registrationUrl),
                       onCardTap: () {
                         Get.to(
-                          () => CulturalEventDetailView(
+                              () => CulturalEventDetailView(
                             event: event,
                             imageUrl: imgUrl,
                             displayDate: displayDate,
                             displayTime: displayTime,
                           ),
                         );
-                      },
+                      }, category: '',
                     );
                   },
                 );
@@ -282,17 +271,17 @@ class CulturalEventView extends StatelessWidget {
     }
   }
 
-  String _getPlaceholderImage(String? category) {
-    if (category == null) return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
-    String cat = category.toLowerCase();
-    if (cat.contains('dance')) return 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad';
-    if (cat.contains('music') || cat.contains('singing')) {
+  String _getPlaceholderImage(String? club) {
+    if (club == null) return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
+    String clubName = club.toLowerCase();
+    if (clubName.contains('dance')) return 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad';
+    if (clubName.contains('music') || clubName.contains('singing')) {
       return 'https://images.unsplash.com/photo-1516280440502-6c39f0ed26f7';
     }
-    if (cat.contains('drama') || cat.contains('theatre')) {
+    if (clubName.contains('drama') || clubName.contains('theatre')) {
       return 'https://images.unsplash.com/photo-1507676184212-d0330a15183e';
     }
-    if (cat.contains('art') || cat.contains('design') || cat.contains('photo')) {
+    if (clubName.contains('art') || clubName.contains('design') || clubName.contains('photo')) {
       return 'https://images.unsplash.com/photo-1513364776144-60967b0f800f';
     }
     return 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30';
@@ -328,13 +317,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: showBackButton
           ? IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: iconColor,
-                size: AppSizes.x20,
-              ),
-              onPressed: () => Get.back(),
-            )
+        icon: Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: iconColor,
+          size: AppSizes.x20,
+        ),
+        onPressed: () => Get.back(),
+      )
           : null,
       title: Text(
         title,

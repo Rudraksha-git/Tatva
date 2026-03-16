@@ -58,8 +58,8 @@ class TeamCategory {
 // ==========================================
 final List<TeamCategory> patnaCoreTeam = [
   TeamCategory(teamName: "General Management", members: [
-    TeamMember(name: "Manaswini Patil", role: "Fest-Coordinator", phone: "8275007608", email: "patilr.ug22.ar@nitp.ac.in"),
-    TeamMember(name: "Harshvardhan Dansena", role: "Fest-Coordinator", phone: "8319728292", email: "harshvardhand.dd22.ce@nitp.ac.in"),
+    TeamMember(name: "Manaswini Patil", role: "Student Coordinator", phone: "8275007608", email: "patilr.ug22.ar@nitp.ac.in"),
+    TeamMember(name: "Harshvardhan Dansena", role: "Student Coordinator", phone: "8319728292", email: "harshvardhand.dd22.ce@nitp.ac.in"),
   ]),
 ];
 
@@ -67,6 +67,7 @@ final List<TeamCategory> patnaCommittees = [
   TeamCategory(teamName: "Sponsorship Leads", members: [
     TeamMember(name: "Krish Sinha", role: "Coordinator", phone: "7061896463", email: "krishs.ug23.ar@nitp.ac.in"),
     TeamMember(name: "Shivang", role: "Co-coordinator", phone: "7007154261", email: "shivangs.ug23.ce@nitp.ac.in"),
+    TeamMember(name: "Priyanshu Goswami", role: "Co-coordinator", phone: "9470080599"),
   ]),
   TeamCategory(teamName: "Decoration", members: [
     TeamMember(name: "Sai Karthik", role: "Coordinator", phone: "9542379013"),

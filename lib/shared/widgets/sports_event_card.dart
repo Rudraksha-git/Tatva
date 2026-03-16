@@ -9,6 +9,7 @@ class SportsEventCard extends StatelessWidget {
   final VoidCallback onRegister;
   final String? registrationUrl;
   final VoidCallback onCardTap;
+  final bool registrationOpen;
 
   const SportsEventCard({
     super.key,
@@ -16,6 +17,7 @@ class SportsEventCard extends StatelessWidget {
     required this.date,
     required this.location,
     required this.description,
+    required this.registrationOpen,
     required this.imageUrl,
      this.registrationUrl,
     required this.onRegister,
@@ -115,7 +117,7 @@ class SportsEventCard extends StatelessWidget {
                     width: double.infinity,
                     height: 44,
                     child: ElevatedButton(
-                      onPressed: registrationUrl!=null ? onRegister : null,
+                      onPressed: registrationUrl!=null && registrationOpen ? onRegister : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFCA28),
                         disabledBackgroundColor: Colors.grey[300],
@@ -123,7 +125,7 @@ class SportsEventCard extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
                       ),
                       child: Text(
-                        registrationUrl!=null ? 'Register Now' : 'Coming Soon',
+                       !registrationOpen? 'Registration Closed / NA' : registrationUrl!=null ? 'Register Now' : 'Coming Soon',
                         style: TextStyle(color: registrationUrl!=null ? Colors.black87 : Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),

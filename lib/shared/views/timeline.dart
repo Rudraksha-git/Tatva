@@ -1,9 +1,7 @@
-import 'package:fest_app/core/const/timeline_bihta.dart';
-import 'package:fest_app/core/const/timeline_patna.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/models/timeline_model.dart';
-
+import 'package:get/get.dart';
+import '../controllers/timeline_controller.dart';
 
 
 class AppColors {
@@ -26,22 +24,14 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
 }
 
-class TimelineScreen extends StatefulWidget {
-  const TimelineScreen({Key? key}) : super(key: key);
+class TimelineScreen extends StatelessWidget {
+  TimelineScreen({Key? key}) : super(key: key);
 
-  @override
-  State<TimelineScreen> createState() => _TimelineScreenState();
-}
-
-class _TimelineScreenState extends State<TimelineScreen> {
-  // Set default location to Patna
-  String _currentLocation = 'Patna';
+  // Initialize the controller
+  final TimelineController controller = Get.put(TimelineController());
 
   @override
   Widget build(BuildContext context) {
-    // Determine which list to pass based strictly on Patna or Bihta
-    List<FestEvent> activeEvents = _currentLocation == 'Bihta' ? bihtaEvents : patnaEvents;
-
     return Scaffold(
       backgroundColor: AppColors.slate50,
       appBar: AppBar(
@@ -57,17 +47,48 @@ class _TimelineScreenState extends State<TimelineScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Custom Segmented Toggle Switch
-            _buildToggleSwitch(),
+      // Obx listens for changes in isLoading, hasError, and activeEvents
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primaryBlue),
+          );
+        }
 
-            // The interactive calendar and list
-            ScheduleListView(events: activeEvents),
-          ],
-        ),
-      ),
+        if (controller.hasError.value) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: AppColors.slate400),
+                const SizedBox(height: 16),
+                Text(
+                  controller.errorMessage.value,
+                  style: const TextStyle(color: AppColors.slate600),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryBlue,
+                  ),
+                  onPressed: controller.fetchEvents,
+                  child: const Text("Retry", style: TextStyle(color: AppColors.white)),
+                )
+              ],
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildToggleSwitch(),
+              ScheduleListView(events: controller.activeEvents),
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -82,13 +103,11 @@ class _TimelineScreenState extends State<TimelineScreen> {
         ),
         child: Row(
           children: ['Patna', 'Bihta'].map((loc) {
-            bool isSelected = _currentLocation == loc;
+            bool isSelected = controller.currentLocation.value == loc;
             return Expanded(
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _currentLocation = loc;
-                  });
+                  controller.toggleLocation(loc);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -96,12 +115,12 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     borderRadius: BorderRadius.circular(22),
                     boxShadow: isSelected
                         ? [
-                      BoxShadow(
-                        color: AppColors.primaryBlue.withOpacity(0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
+                            BoxShadow(
+                              color: AppColors.primaryBlue.withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
                         : [],
                   ),
                   alignment: Alignment.center,
@@ -140,7 +159,7 @@ class _ScheduleListViewState extends State<ScheduleListView> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime(2026, 2, 14);
+    _selectedDate = DateTime.now();
     _viewMonth = DateTime(_selectedDate.year, _selectedDate.month);
 
     double initialOffset = (_selectedDate.day - 1) * 68.0;
@@ -212,20 +231,17 @@ class _ScheduleListViewState extends State<ScheduleListView> {
   @override
   Widget build(BuildContext context) {
     String formattedSelectedDate = _formatEventDate(_selectedDate);
-    // Filters the passed events based on the calendar
     List<FestEvent> filteredEvents = widget.events.where((e) => e.date == formattedSelectedDate).toList();
 
     return Column(
       children: [
         _buildCalendarHeader(),
-
         filteredEvents.isEmpty
             ? _buildEmptyState()
             : ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 itemCount: filteredEvents.length,
                 itemBuilder: (context, index) {
                   return Padding(
@@ -286,9 +302,7 @@ class _ScheduleListViewState extends State<ScheduleListView> {
                     ),
                   ],
                 ),
-
                 const Spacer(),
-
                 InkWell(
                   onTap: _jumpToToday,
                   borderRadius: BorderRadius.circular(20),
@@ -318,9 +332,7 @@ class _ScheduleListViewState extends State<ScheduleListView> {
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
           SizedBox(
             height: 80,
             child: ListView.builder(
@@ -392,8 +404,7 @@ class _ScheduleListViewState extends State<ScheduleListView> {
                 color: AppColors.slate200.withOpacity(0.3),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.event_available_rounded,
-                  size: 48, color: AppColors.slate400),
+              child: const Icon(Icons.event_available_rounded, size: 48, color: AppColors.slate400),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -411,8 +422,9 @@ class _ScheduleListViewState extends State<ScheduleListView> {
                 fontSize: 14,
                 color: AppColors.slate400.withOpacity(0.9),
               ),
-            ),]
-          ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -569,14 +581,13 @@ class EventCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          // --- ADDED: Club Name Row ---
                           Row(
                             children: [
                               const Icon(Icons.groups_outlined, size: 13, color: AppColors.slate400),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  event.club, // Fully extracts and displays the club name
+                                  event.club,
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: AppColors.slate500,

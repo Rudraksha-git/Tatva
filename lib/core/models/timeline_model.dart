@@ -14,4 +14,14 @@ class FestEvent {
     required this.venue,
     required this.club,
   });
+
+  factory FestEvent.fromJson(Map<String, dynamic> json) {
+    return FestEvent(
+      date: json['date'] as String,
+      title: json['title'] as String,
+      time: json['time'] as String,
+      venue: json['venue'] as String,
+      club: json['club'] as String,
+    );
+  }
 }

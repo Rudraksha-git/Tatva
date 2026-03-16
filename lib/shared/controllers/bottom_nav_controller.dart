@@ -14,12 +14,21 @@ class BottomNavController extends GetxController {
   }
 
   void changeIndex(int index) {
+    if (_selectedIndex.value == index) return;
+    
+    int previousIndex = _selectedIndex.value;
     _selectedIndex.value = index;
-    pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    
+    // If jumping multiple tabs, jump instantly to avoid swiping through intermediate pages
+    if ((index - previousIndex).abs() > 1) {
+      pageController.jumpToPage(index);
+    } else {
+      pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
   }
 
   void onPageChanged(int index) {

@@ -320,7 +320,7 @@ class CulturalEventDetailView extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          event.registrationUrl!=null ? 'Register Now' : 'Coming Soon',
+                                                event.registrationOpen==false? "Registration Closed / NA" :event.registrationUrl!=null ? 'Register Now' : 'Coming Soon',
                           style: TextStyle(
                             color: event.registrationUrl!=null ? Colors.black87 : Colors.grey[600],
                             fontWeight: FontWeight.bold,

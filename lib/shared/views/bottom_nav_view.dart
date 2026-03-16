@@ -27,7 +27,7 @@ class BottomNavView extends StatelessWidget {
       body: PageView(
         controller: controller.pageController,
         onPageChanged: controller.onPageChanged,
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: screens,
       ),
       bottomNavigationBar: _buildBottomBar(),
