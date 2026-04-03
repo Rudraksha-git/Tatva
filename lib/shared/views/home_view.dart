@@ -6,6 +6,9 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../config/app_sizes.dart';
 import '../controllers/home_controller.dart';
+import 'package:fest_app/shared/widgets/announcement_card.dart';
+import 'package:fest_app/shared/widgets/announcement_detail_dialog.dart';
+import 'package:fest_app/shared/views/sponsors_view.dart';
 import 'all_anouncement._view.dart' hide CustomAppBar;
 
 // Import your other screens
@@ -64,6 +67,8 @@ class HomeView extends StatelessWidget {
                // 3. Messages from Leadership (Made more compact)
 
             _buildRulebookButton(),
+
+            _buildSponsorsButton(),
 
             _buildMessagesSection(),
 
@@ -403,6 +408,62 @@ Widget _buildRulebookButton() {
   );
 }
 
+// --- 6. SPONSORS BUTTON ---
+Widget _buildSponsorsButton() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 24),
+    child: InkWell(
+      onTap: () => Get.to(() => SponsorsView()),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey[200]!, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4)
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.orange[50], 
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.handshake_rounded, color: Colors.orange[700], size: 22),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Our Sponsors",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "Partners who make this possible",
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey[400]),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 // Helper function to open web links
 Future<void> _launchWebURL(String urlString) async {
   final Uri url = Uri.parse(urlString);
@@ -480,7 +541,7 @@ Future<void> _launchWebURL(String urlString) async {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 140,
+            height: 216,
             child: Obx(() {
               if (controller.isAnnouncementsLoading.value) {
                 return const Center(child: CircularProgressIndicator());
@@ -502,50 +563,31 @@ Future<void> _launchWebURL(String urlString) async {
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 itemCount: controller.announcements.length,
                 itemBuilder: (context, index) {
                   var ann = controller.announcements[index];
                   bool isNew = ann["isNew"] == "true";
 
-                  return Container(
-                    width: 280,
-                    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey[200]!),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 4))],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                ann["title"] ?? "Update",
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
-                                maxLines: 1, overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (isNew)
-                              Container(width: 8, height: 8, decoration: const BoxDecoration(color: Colors.redAccent, shape: BoxShape.circle)),
-                          ],
+                  return AnnouncementCard(
+                    title: ann["title"] ?? "Update",
+                    body: ann["body"] ?? "",
+                    time: ann["time"] ?? "",
+                    isNew: isNew,
+                    imageUrl: ann["imageUrl"],
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AnnouncementDetailDialog(
+                          title: ann["title"] ?? "Update",
+                          body: ann["body"] ?? "",
+                          time: ann["time"] ?? "",
+                          imageUrl: ann["imageUrl"],
+                          ctaLabel: ann["ctaLabel"],
+                          ctaUrl: ann["ctaUrl"],
                         ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: Text(
-                            ann["body"] ?? "",
-                            style: TextStyle(fontSize: 13, color: Colors.grey[600], height: 1.4),
-                            maxLines: 2, overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text(ann["time"] ?? "", style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.blue[400])),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               );

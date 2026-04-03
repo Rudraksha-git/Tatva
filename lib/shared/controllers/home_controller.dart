@@ -51,6 +51,9 @@ class HomeController extends GetxController {
             "body": item["body"]?.toString() ?? "No details provided.",
             "time": item["createdAt"] != null ? _formatRelativeTime(item["createdAt"]) : "Recently",
             "isNew": "true", // Mark as new for UI styling
+            "imageUrl": item["imageUrl"]?.toString(),
+            "ctaLabel": item["ctaLabel"]?.toString(),
+            "ctaUrl": item["ctaUrl"]?.toString(),
           };
         }).toList();
 
