@@ -27,158 +27,169 @@ class CulturalEventView extends StatelessWidget {
         notificationCount: 3,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // 1. Location Toggle Switch
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Container(
-                height: 44,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(22),
-                ),
-                child: Obx(() {
-                  String currentLocation = controller.selectedLocation.value;
-                  return Row(
-                    children: ['All', 'Bihta', 'Patna'].map((loc) {
-                      bool isSelected = currentLocation == loc;
-                      return Expanded(
-                        child: GestureDetector(
-                          onTap: () => controller.setLocation(loc),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.blue[600] : Colors.transparent,
-                              borderRadius: BorderRadius.circular(22),
-                              boxShadow: isSelected
-                                  ? [
-                                BoxShadow(
-                                  color: Colors.blue.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
+        child: RefreshIndicator(
+          onRefresh: () => controller.fetchEvents(),
+          child: CustomScrollView(
+            // AlwaysScrollable ensures pull-to-refresh works even if the list is empty/short
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              // 1. All your fixed top filters go inside a SliverToBoxAdapter
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // Location Toggle Switch
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      child: Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Obx(() {
+                          String currentLocation = controller.selectedLocation.value;
+                          return Row(
+                            children: ['Bihta', 'Patna'].map((loc) {
+                              bool isSelected = currentLocation == loc;
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () => controller.setLocation(loc),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? Colors.blue[600] : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(22),
+                                      boxShadow: isSelected
+                                          ? [
+                                              BoxShadow(
+                                                color: Colors.blue.withOpacity(0.3),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                          : [],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      loc,
+                                      style: TextStyle(
+                                        color: isSelected ? Colors.white : Colors.grey[600],
+                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ]
-                                  : [],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              loc,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.grey[600],
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                                fontSize: 14,
+                              );
+                            }).toList(),
+                          );
+                        }),
+                      ),
+                    ),
+
+                    // Club Tab Bar (DYNAMIC)
+                    Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+                      ),
+                      child: Obx(() {
+                        String currentClub = controller.selectedClub.value;
+                        List<String> clubs = controller.dynamicClubs;
+
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          itemCount: clubs.length,
+                          itemBuilder: (context, index) {
+                            String club = clubs[index];
+                            bool isSelected = currentClub == club;
+
+                            return GestureDetector(
+                              onTap: () => controller.setClub(club),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: isSelected ? Colors.deepOrange : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  club,
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.deepOrange : Colors.grey[500],
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    ),
+
+                    // Search Bar & Filter
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              onChanged: (val) => controller.searchQuery.value = val,
+                              decoration: InputDecoration(
+                                hintText: 'Search events...',
+                                prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(22),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[100],
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                }),
-              ),
-            ),
-
-            // 2. Club Tab Bar (DYNAMIC)
-            Container(
-              height: 45,
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-              ),
-              child: Obx(() {
-                String currentClub = controller.selectedClub.value;
-                List<String> clubs = controller.dynamicClubs;
-
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: clubs.length,
-                  itemBuilder: (context, index) {
-                    String club = clubs[index];
-                    bool isSelected = currentClub == club;
-
-                    return GestureDetector(
-                      onTap: () => controller.setClub(club),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: isSelected ? Colors.deepOrange : Colors.transparent,
-                              width: 3,
-                            ),
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          club,
-                          style: TextStyle(
-                            color: isSelected ? Colors.deepOrange : Colors.grey[500],
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-              child: Row(
-                children: [
-                  // Search Bar
-                  Expanded(
-                    child: TextField(
-                      onChanged: (val) => controller.searchQuery.value = val,
-                      decoration: InputDecoration(
-                        hintText: 'Search events...',
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(22),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
+                          const SizedBox(width: 12),
+                          Obx(() => Row(
+                                children: [
+                                  Switch(
+                                    value: controller.showOnlyWithRegistration.value,
+                                    onChanged: (val) => controller.showOnlyWithRegistration.value = val,
+                                    activeColor: Colors.blue,
+                                  ),
+                                  Text(
+                                    'Reg Open',
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Filter Toggle
-                  Obx(() => Row(
-                    children: [
-                      Switch(
-                        value: controller.showOnlyWithRegistration.value,
-                        onChanged: (val) => controller.showOnlyWithRegistration.value = val,
-                        activeColor: Colors.blue,
-                      ),
-                      Text(
-                        'Reg Open',
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  )),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            // 3. Filtered Events List
-            Expanded(
-              child: Obx(() {
+              // 2. The dynamic list of events wrapped in an Obx
+              Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
                 }
 
                 final filtered = controller.filteredEvents.where((event) {
                   if (controller.showOnlyWithRegistration.value &&
-                      (event.registrationUrl == null || event.registrationUrl!.isEmpty)) {
+                      (event.registrationUrl == null || event.registrationUrl!.isEmpty || event.registrationOpen == false)) {
                     return false;
                   }
                   final query = controller.searchQuery.value.trim().toLowerCase();
@@ -194,52 +205,61 @@ class CulturalEventView extends StatelessWidget {
                 }).toList();
 
                 if (filtered.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "No events match your filters.",
-                      style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        "No events match your filters.",
+                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                      ),
                     ),
                   );
                 }
 
-                return ListView.separated(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 24),
-                  itemBuilder: (context, index) {
-                    var event = filtered[index];
-                    String displayDate =
-                    event.startDate != null ? _formatDate(event.startDate!) : 'TBA';
-                    String displayTime = event.schedule?.time ?? event.schedule?.prelims ?? 'TBA';
-                    String imgUrl = event.posterUrl ?? _getPlaceholderImage(event.club);
+                // Standard scrolling list for the actual items
+                return SliverPadding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var event = filtered[index];
+                        String displayDate = event.startDate != null ? _formatDate(event.startDate!) : 'TBA';
+                        String displayTime = event.schedule?.time ?? event.schedule?.prelims ?? 'TBA';
+                        String imgUrl = event.posterUrl ?? _getPlaceholderImage(event.club);
 
-                    return EventCard(
-                      eventName: event.event ?? 'Unknown Event',
-                      club: event.club ?? 'No Club',
-                      date: displayDate,
-                      time: displayTime,
-                      location: event.venue ?? 'TBA',
-                      description: event.description ?? '',
-                      registrationUrl: event.registrationUrl,
-                      registrationOpen: event.registrationOpen ?? false,
-                      imageUrl: imgUrl,
-                      onRegister: () => _handleRegistration(event.registrationUrl),
-                      onCardTap: () {
-                        Get.to(
-                              () => CulturalEventDetailView(
-                            event: event,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: EventCard(
+                            eventName: event.event ?? 'Unknown Event',
+                            club: event.club ?? 'No Club',
+                            date: displayDate,
+                            time: displayTime,
+                            location: event.venue ?? 'TBA',
+                            description: event.description ?? '',
+                            registrationUrl: event.registrationUrl,
+                            registrationOpen: event.registrationOpen ?? false,
                             imageUrl: imgUrl,
-                            displayDate: displayDate,
-                            displayTime: displayTime,
+                            onRegister: () => _handleRegistration(event.registrationUrl),
+                            onCardTap: () {
+                              Get.to(
+                                () => CulturalEventDetailView(
+                                  event: event,
+                                  imageUrl: imgUrl,
+                                  displayDate: displayDate,
+                                  displayTime: displayTime,
+                                ),
+                              );
+                            },
+                            category: '',
                           ),
                         );
-                      }, category: '',
-                    );
-                  },
+                      },
+                      childCount: filtered.length,
+                    ),
+                  ),
                 );
               }),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

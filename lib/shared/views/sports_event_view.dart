@@ -41,233 +41,249 @@ class SportsEventView extends StatelessWidget {
         },
         notificationCount: 3,
       ),
-      body: Column(
-        children: [
-          // 0. Search Bar and Filter Toggle
-          
-
-          // 1. Location Toggle Switch
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            child: Container(
-              height: 44,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: Obx(() {
-                String currentLocation = controller.selectedLocation.value;
-                return Row(
-                  children: ['All', 'Bihta', 'Patna'].map((loc) {
-                    bool isSelected = currentLocation == loc;
-                    return Expanded(
-                      child: GestureDetector(
-                        onTap: () => controller.setLocation(loc),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: isSelected ? Colors.green[600] : Colors.transparent,
-                            borderRadius: BorderRadius.circular(22),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.green.withOpacity(0.3),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () => controller.fetchEvents(),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(), // Pull-to-refresh always active
+            slivers: [
+              // 1. Fixed Filters wrapped in a SliverToBoxAdapter
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // Location Toggle Switch
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      child: Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        child: Obx(() {
+                          String currentLocation = controller.selectedLocation.value;
+                          return Row(
+                            children: ['Bihta', 'Patna'].map((loc) {
+                              bool isSelected = currentLocation == loc;
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () => controller.setLocation(loc),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? Colors.green[600] : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(22),
+                                      boxShadow: isSelected
+                                          ? [
+                                              BoxShadow(
+                                                color: Colors.green.withOpacity(0.3),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                          : [],
                                     ),
-                                  ]
-                                : [],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            loc,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.grey[600],
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                              fontSize: 14,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      loc,
+                                      style: TextStyle(
+                                        color: isSelected ? Colors.white : Colors.grey[600],
+                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        }),
+                      ),
+                    ),
+        
+                    // Sport Category Tab Bar
+                    Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+                      ),
+                      child: Obx(() {
+                        String currentSport = controller.selectedSport.value;
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          itemCount: sportsTabs.length,
+                          itemBuilder: (context, index) {
+                            String tab = sportsTabs[index];
+                            bool isSelected = currentSport == tab;
+                            return GestureDetector(
+                              onTap: () => controller.setSport(tab),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: isSelected ? Colors.deepOrange : Colors.transparent,
+                                      width: 3,
+                                    ),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  tab,
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.deepOrange : Colors.grey[500],
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    ),
+        
+                    // Search Bar and Filter Toggle
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              onChanged: (val) => controller.searchQuery.value = val,
+                              decoration: InputDecoration(
+                                hintText: 'Search events...',
+                                prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(22),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 12),
+                          Obx(() => Row(
+                                children: [
+                                  Switch(
+                                    value: controller.showOnlyWithRegistration.value,
+                                    onChanged: (val) => controller.showOnlyWithRegistration.value = val,
+                                    activeColor: Colors.green,
+                                  ),
+                                  Text(
+                                    'Reg Open',
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ],
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+        
+              // 2. The Dynamic Filtered Events List
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+        
+                final filtered = controller.filteredEvents.where((event) {
+                  if (controller.showOnlyWithRegistration.value &&
+                      (event.registrationUrl == null || event.registrationUrl!.isEmpty || event.registrationOpen == false)) {
+                    return false;
+                  }
+                  final query = controller.searchQuery.value.trim().toLowerCase();
+                  if (query.isEmpty) return true;
+                  final name = (event.sport ?? '').toLowerCase();
+                  final desc = (event.description ?? '').toLowerCase();
+                  final venue = (event.venue ?? '').toLowerCase();
+                  return name.contains(query) || desc.contains(query) || venue.contains(query);
+                }).toList();
+        
+                if (filtered.isEmpty) {
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text(
+                        "No sports match your filters.",
+                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                      ),
+                    ),
+                  );
+                }
+        
+                return SliverPadding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var event = filtered[index];
+        
+                        String dateString = 'TBA';
+                        if (event.startDate != null && event.endDate != null) {
+                          dateString =
+                              "${_formatDate(event.startDate!)} - ${_formatDate(event.endDate!)}";
+                        } else if (event.startDate != null) {
+                          dateString = _formatDate(event.startDate!);
+                        }
+        
+                        String imgUrl = _getSportPlaceholder(event.sport);
+        
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: SportsEventCard(
+                            sportName: event.sport ?? 'Unknown Sport',
+                            registrationOpen: event.registrationOpen ?? false,
+                            date: dateString,
+                            location: event.venue ?? 'TBA',
+                            description: event.description ?? '',
+                            registrationUrl: event.registrationUrl,
+                            imageUrl: event.posterUrl.toString(),
+                            onRegister: () {
+                              if (event.registrationUrl == null) {
+                                Get.snackbar(
+                                  "Registration URL Missing",
+                                  "Sorry, the registration link for this event is currently unavailable.",
+                                  backgroundColor: Colors.red[50],
+                                  colorText: Colors.red[700],
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                return;
+                              }
+                              launchUrl(Uri.parse(event.registrationUrl!));
+                            },
+                            onCardTap: () {
+                              Get.to(
+                                () => SportsEventDetailView(
+                                  event: event,
+                                  imageUrl: event.posterUrl ?? imgUrl,
+                                  displayDate: dateString,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      childCount: filtered.length,
+                    ),
+                  ),
                 );
               }),
-            ),
+            ],
           ),
-
-          // 2. Sport Category Tab Bar
-          Container(
-            height: 45,
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-            ),
-            child: Obx(() {
-              String currentSport = controller.selectedSport.value;
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: sportsTabs.length,
-                itemBuilder: (context, index) {
-                  String tab = sportsTabs[index];
-                  bool isSelected = currentSport == tab;
-                  return GestureDetector(
-                    onTap: () => controller.setSport(tab),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: isSelected ? Colors.deepOrange : Colors.transparent,
-                            width: 3,
-                          ),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        tab,
-                        style: TextStyle(
-                          color: isSelected ? Colors.deepOrange : Colors.grey[500],
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            child: Row(
-              children: [
-                // Search Bar - Removed Obx wrapper here
-                Expanded(
-                  child: TextField(
-                    onChanged: (val) => controller.searchQuery.value = val,
-                    decoration: InputDecoration(
-                      hintText: 'Search events...',
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // Filter Toggle
-                Obx(() => Row(
-                      children: [
-                        Switch(
-                          value: controller.showOnlyWithRegistration.value,
-                          onChanged: (val) => controller.showOnlyWithRegistration.value = val,
-                          activeColor: Colors.green,
-                        ),
-                        Text(
-                          'Reg Open',
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-          ),
-
-          // 3. Filtered Events List
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              // Compose filtered list based on search and toggle
-              final filtered = controller.filteredEvents.where((event) {
-                // Filter by registrationUrl if toggle is on
-                if (controller.showOnlyWithRegistration.value &&
-                    (event.registrationUrl == null || event.registrationUrl!.isEmpty)) {
-                  return false;
-                }
-                // Filter by search query
-                final query = controller.searchQuery.value.trim().toLowerCase();
-                if (query.isEmpty) return true;
-                final name = (event.sport ?? '').toLowerCase();
-                final desc = (event.description ?? '').toLowerCase();
-                final venue = (event.venue ?? '').toLowerCase();
-                return name.contains(query) || desc.contains(query) || venue.contains(query);
-              }).toList();
-
-              if (filtered.isEmpty) {
-                return Center(
-                  child: Text(
-                    "No sports match your filters.",
-                    style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                  ),
-                );
-              }
-
-              return ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: filtered.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 24),
-                itemBuilder: (context, index) {
-                  var event = filtered[index];
-
-                  // Construct date string
-                  String dateString = 'TBA';
-                  if (event.startDate != null && event.endDate != null) {
-                    dateString =
-                        "${_formatDate(event.startDate!)} - ${_formatDate(event.endDate!)}";
-                  } else if (event.startDate != null) {
-                    dateString = _formatDate(event.startDate!);
-                  }
-
-                  String imgUrl = _getSportPlaceholder(event.sport);
-
-                  return SportsEventCard(
-                    sportName: event.sport ?? 'Unknown Sport',
-                    registrationOpen: event.registrationOpen ?? false,
-                    date: dateString,
-                    location: event.venue ?? 'TBA',
-                    description: event.description ?? '',
-                    registrationUrl: event.registrationUrl,
-                    imageUrl: event.posterUrl.toString(),
-                    onRegister: () {
-                      if (event.registrationUrl == null) {
-                        Get.snackbar(
-                          "Registration URL Missing",
-                          "Sorry, the registration link for this event is currently unavailable.",
-                          backgroundColor: Colors.red[50],
-                          colorText: Colors.red[700],
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                        return;
-                      }
-                      launchUrl(Uri.parse(event.registrationUrl!));
-                    },
-                    onCardTap: () {
-                      Get.to(
-                        () => SportsEventDetailView(
-                          event: event,
-                          imageUrl: event.posterUrl ?? imgUrl,
-                          displayDate: dateString,
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            }),
-          ),
-        ],
+        ),
       ),
     );
   }

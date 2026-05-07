@@ -282,11 +282,8 @@ class HomeView extends StatelessWidget {
                               onPressed: () {
                                 // 1. Find your existing BottomNavController
                                 final bottomNavController = Get.find<BottomNavController>();
-                                bottomNavController.changeIndex(3);
+                                bottomNavController.changeIndex(4);
 
-                                // 2. Tell it to switch to the Timeline tab.
-                                // Change '1' to whatever index your TimelineScreen is at in your bottom navigation!
-                                 // This will switch to the Timeline tab
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFFFCA28),

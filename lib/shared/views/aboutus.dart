@@ -69,6 +69,10 @@ final List<TeamCategory> patnaCommittees = [
     TeamMember(name: "Shivang", role: "Co-coordinator", phone: "7007154261", email: "shivangs.ug23.ce@nitp.ac.in"),
     TeamMember(name: "Priyanshu Goswami", role: "Co-coordinator", phone: "9470080599"),
   ]),
+  TeamCategory(teamName: "Tech Leads", members: [
+    TeamMember(name: "Rudraksha Kumar", role: "Coordinator"),
+    TeamMember(name: "Aryan Binani", role: "Co-coordinator"),
+  ]),
   TeamCategory(teamName: "Decoration", members: [
     TeamMember(name: "Sai Karthik", role: "Coordinator", phone: "9542379013"),
     TeamMember(name: "Boda Karthik", role: "Coordinator", phone: "9618190859"),
@@ -108,9 +112,17 @@ final List<TeamCategory> patnaEventLeads = [
     TeamMember(name: "Bhavyanshi", role: "Co-coordinator", phone: "9829094848"),
     TeamMember(name: "Deepali", role: "Co-coordinator", phone: "7428485611", email: "deepalim.ug24.me@nitp.ac.in"),
   ]),
+
+  TeamCategory(teamName: "Nazariya", members: [
+     TeamMember(name: "Satyam Kumar", role: "Co-coordinator", phone: "7765976599", email: "satyamk.ug24.ce@nitp.ac.in"),
+     TeamMember(name: "Vaibhav Gupta", role: "Co-coordinator", phone: "7518003682",),
+
+
+  ]),
   TeamCategory(teamName: "Sanhita", members: [
     TeamMember(name: "Rishav", role: "Coordinator", phone: "7808108775"),
-    TeamMember(name: "Satyam", role: "Co-coordinator", phone: "7765976599", email: "satyamk.ug24.ce@nitp.ac.in"),
+    // TeamMember(name: "Satyam", role: "Co-coordinator", phone: "7765976599", email: "satyamk.ug24.ce@nitp.ac.in"),
+        TeamMember(name: "Satyam Tiwari ", role: "Co-coordinator", phone: "7545924508", email: "satyamt.dd24.me@nitp.ac.in"),
     TeamMember(name: "Nitin", role: "Co-coordinator", phone: "9555631830", email: "nitint.ug24.me@nitp.ac.in"),
   ]),
   TeamCategory(teamName: "Abhinay", members: [
@@ -143,12 +155,31 @@ final List<TeamCategory> patnaEventLeads = [
 // DATA: BIHTA CAMPUS
 // ==========================================
 final List<TeamCategory> bihtaCoreTeam = [
+  // TeamCategory(teamName: "General Management", members: [
+  //   TeamMember(name: "Anshuman Padhi", role: "Coordinator", phone: "9444314703", email: "anshumanp.ug23.cs@nitp.ac.in"),
+  //   TeamMember(name: "Aakash Tiwari", role: "Coordinator", phone: "7903490789", email: "aakasht.ug23.cs@nitp.ac.in"),
+  //   TeamMember(name: "Rahul Chaudhary", role: "Co-coordinator", phone: "9044344565", email: "rahulc.ug23.ec@nitp.ac.in"),
+  //   TeamMember(name: "Vikrant Prasad Singh", role: "Co-coordinator", phone: "9336683006", email: "vikrants.ug23.ec@nitp.ac.in"),
+  // ]),
+
   TeamCategory(teamName: "General Management", members: [
     TeamMember(name: "Anshuman Padhi", role: "Coordinator", phone: "9444314703", email: "anshumanp.ug23.cs@nitp.ac.in"),
-    TeamMember(name: "Aakash Tiwari", role: "Coordinator", phone: "7903490789", email: "aakasht.ug23.cs@nitp.ac.in"),
-    TeamMember(name: "Rahul Chaudhary", role: "Co-coordinator", phone: "9044344565", email: "rahulc.ug23.ec@nitp.ac.in"),
-    TeamMember(name: "Vikrant Prasad Singh", role: "Co-coordinator", phone: "9336683006", email: "vikrants.ug23.ec@nitp.ac.in"),
+    TeamMember(name: "Vasu Chaudhary", role: "Coordinator", phone: "8600550839"),
+    TeamMember(name: "Aniket Jha", role: "Co-coordinator", phone: "9430045319"),
+    TeamMember(name: "Mohit Yadav", role: "Co-coordinator", phone: "8302202092"),    
+    TeamMember(name: "Rachita Raman", role: "Co-coordinator", phone: "9321308542"),
+    TeamMember(name: "Shreya Pandey", role: "Co-coordinator", phone: "7233002984"),
+    // TeamMember(name: "Rahul Chaudhary", role: "Co-coordinator", phone: "9044344565", email: "rahulc.ug23.ec@nitp.ac.in"),
+    // TeamMember(name: "Vikrant Prasad Singh", role: "Co-coordinator", phone: "9336683006", email: "vikrants.ug23.ec@nitp.ac.in"),
   ]),
+
+  TeamCategory(teamName: "Tech Leads", members: [
+    TeamMember(name: "Ravi Upadhyay", role: "Coordinator",),
+    TeamMember(name: "Vasu Choudhari", role: "Co-coordinator"),
+    TeamMember(name:"Tanay Palekar", role: "App Developer"),
+    TeamMember(name: "Gaurav", role: "App Developer"),
+    TeamMember(name: "Aditya", role: "UI/UX Designer"),
+    ])
 ];
 
 final List<TeamCategory> bihtaCommittees = [
