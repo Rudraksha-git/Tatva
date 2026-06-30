@@ -309,7 +309,7 @@ class _AboutUsViewState extends State<AboutUsView> {
                     data: Theme.of(context).copyWith(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      tabBarTheme: const TabBarTheme(
+                      tabBarTheme: const TabBarThemeData(
                         overlayColor: WidgetStatePropertyAll(Colors.transparent),
                         dividerColor: Colors.transparent,
                         indicatorColor: Colors.transparent,
