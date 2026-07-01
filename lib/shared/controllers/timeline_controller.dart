@@ -59,7 +59,6 @@ class TimelineController extends GetxController {
 
   List<FestEvent> _parseEvents(dynamic responseData) {
     List<dynamic> data;
-    // Handle cases where GitHub raw URL returns a plain text string instead of JSON
     if (responseData is String) {
       data = jsonDecode(responseData);
     } else {

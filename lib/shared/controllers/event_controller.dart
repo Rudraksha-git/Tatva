@@ -10,7 +10,7 @@ class EventController extends GetxController {
   var allEvents = <EventModel>[].obs;
 
   // Active Filters
-  var selectedLocation = 'All'.obs;
+  var selectedLocation = 'Bihta'.obs;
   var selectedClub = 'All Clubs'.obs;
 
   // Rx variables for Search and Registration toggle
@@ -66,8 +66,8 @@ class EventController extends GetxController {
       // 1. Check if this specific event happens at the currently selected campus
       bool matchesLocation = selectedLocation.value == 'All' ||
           (event.location?.toUpperCase() == selectedLocation.value.toUpperCase());
-
       // 2. Only add the club to the list IF it has an event at this campus
+
       if (matchesLocation && event.club != null && event.club!.trim().isNotEmpty) {
         uniqueClubs.add(event.club!.trim());
       }

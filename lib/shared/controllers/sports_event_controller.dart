@@ -15,7 +15,7 @@ class SportsEventController extends GetxController {
 
 
   // Active Filters
-  var selectedLocation = 'All'.obs;
+  var selectedLocation = 'Bihta'.obs;
   var selectedSport = 'All Sports'.obs;
 
   final Dio _dio = Dio();
