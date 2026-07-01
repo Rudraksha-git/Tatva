@@ -1,13 +1,13 @@
-import 'package:fest_app/config/app_theme.dart';
+import 'package:fest_app/app/core/theme/app_theme.dart';
 import 'package:fest_app/firebase_options.dart';
-import 'package:fest_app/shared/views/splash_screen.dart';
+import 'package:fest_app/app/routes/app_pages.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart'; // ADDED
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'core/services/notification_services.dart';
+import 'package:fest_app/app/data/services/notification_services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // 1. ADD BACKGROUND HANDLER (Must be a top-level function)
@@ -57,7 +57,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
-      home: SplashScreen(),
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }
